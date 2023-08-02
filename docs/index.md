@@ -3,12 +3,12 @@
 page_title: "resourcely Provider"
 subcategory: ""
 description: |-
-  
+  Configure Resourcely resources
 ---
 
 # resourcely Provider
 
-
+Configure Resourcely resources
 
 ## Example Usage
 
@@ -23,4 +23,6 @@ provider "scaffolding" {
 
 ### Optional
 
-- `endpoint` (String) Example provider attribute
+- `allowed_tenants` (List of String) List of allowed tenant names (case-insensitive) to prevent accidently applying a configuration to the wrong one.
+- `auth_token` (String, Sensitive) Authorization token for Resourcely API.
+- `host` (String) URI for Resourcely API.
