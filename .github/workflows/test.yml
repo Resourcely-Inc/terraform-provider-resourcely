@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - 'README.md'
   push:
+    branches: [main]
     paths-ignore:
       - 'README.md'
 
@@ -77,5 +78,7 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
+          RESOURCELY_HOST: "https://api.dev.resourcely.io"
+          RESOURCELY_AUTH_TOKEN: ${{ secrets.RESOURCELY_API_TOKEN }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
