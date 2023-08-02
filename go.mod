@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-provider-scaffolding-framework
+module github.com/Resourcely-Inc/terraform-provider-resourcely
 
 go 1.19
 
