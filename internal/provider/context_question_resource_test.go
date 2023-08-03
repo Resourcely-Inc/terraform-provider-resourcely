@@ -47,6 +47,27 @@ func TestAccContextQuestionResource_basic(t *testing.T) {
 	})
 }
 
+func TestAccContextQuestionResource_useDefaults(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Create and Read testing
+			{
+				Config: testAccContextQuestionResourceConfig_useDefaults("what is your prompt?"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestMatchResourceAttr("resourcely_context_question.usedefaults", "id", regexp.MustCompile("^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$")),
+					resource.TestMatchResourceAttr("resourcely_context_question.usedefaults", "series_id", regexp.MustCompile("^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$")),
+					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "prompt", "what is your prompt?"),
+					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "qtype", "QTYPE_TEXT"),
+					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "blueprint_categories.0", "BLUEPRINT_BLOB_STORAGE"),
+				),
+			},
+			// Delete testing automatically occurs in TestCase
+		},
+	})
+}
+
 func importContextQuestionBySeriesId(contextQuestionName string) resource.ImportStateIdFunc {
 	return func(s *terraform.State) (string, error) {
 		contextQuestion := s.RootModule().Resources[contextQuestionName]
@@ -72,6 +93,17 @@ resource "resourcely_context_question" "basic" {
 	label = "marketing"
 	regex_pattern = "regex"
 	excluded_blueprint_series = []
+}
+`, prompt)
+}
+
+func testAccContextQuestionResourceConfig_useDefaults(prompt string) string {
+	return fmt.Sprintf(`
+resource "resourcely_context_question" "usedefaults" {
+	prompt = "%s"
+	qtype = "QTYPE_TEXT"
+	scope = "SCOPE_TENANT"
+	blueprint_categories = ["BLUEPRINT_BLOB_STORAGE"]
 }
 `, prompt)
 }

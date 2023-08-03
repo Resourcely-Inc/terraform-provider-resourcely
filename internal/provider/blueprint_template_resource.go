@@ -8,12 +8,15 @@ import (
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -79,6 +82,8 @@ func (r *BlueprintTemplateResource) Schema(
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "",
+				Default:             stringdefault.StaticString(""),
+				Computed:            true,
 				Optional:            true,
 			},
 			"cloud_provider": schema.StringAttribute{
@@ -99,16 +104,22 @@ func (r *BlueprintTemplateResource) Schema(
 			},
 			"guidance": schema.StringAttribute{
 				MarkdownDescription: "",
+				Default:             stringdefault.StaticString(""),
+				Computed:            true,
 				Optional:            true,
 			},
 			"labels": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				MarkdownDescription: "",
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
+				Computed:            true,
 				Optional:            true,
 			},
 			"categories": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				MarkdownDescription: "",
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
+				Computed:            true,
 				Optional:            true,
 				Validators: []validator.Set{
 					// All list items must pass the nested validators
