@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -71,7 +72,9 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"label": schema.StringAttribute{
 				MarkdownDescription: "",
+				Default:             stringdefault.StaticString(""),
 				Optional:            true,
+				Computed:            true,
 			},
 			"prompt": schema.StringAttribute{
 				MarkdownDescription: "",
@@ -103,7 +106,9 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"context_question_options": schema.SetNestedAttribute{
 				MarkdownDescription: "",
+				Default:             setdefault.StaticValue(types.SetValueMust(types.ObjectType{AttrTypes: map[string]attr.Type{"label": types.StringType}}, nil)),
 				Optional:            true,
+				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"label": schema.StringAttribute{
@@ -116,6 +121,8 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 			"blueprint_categories": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				MarkdownDescription: "",
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
+				Computed:            true,
 				Optional:            true,
 				Validators: []validator.Set{
 					// All list items must pass the nested validators
@@ -139,7 +146,7 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 				Computed:            true,
 			},
 			"excluded_blueprint_series": schema.SetAttribute{
-				Default:             setdefault.StaticValue(types.Set{}),
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
 				ElementType:         basetypes.StringType{},
 				MarkdownDescription: "series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories",
 				Optional:            true,
