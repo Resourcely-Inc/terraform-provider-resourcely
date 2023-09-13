@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type ContextQuestionOption struct {
+type AnswerChoices struct {
 	Label types.String `tfsdk:"label"`
 }
 
@@ -18,15 +18,15 @@ type ContextQuestionResourceModel struct {
 	SeriesId types.String `tfsdk:"series_id"`
 	Version  types.Int64  `tfsdk:"version"`
 
-	Label                   types.String            `tfsdk:"label"`
-	Prompt                  types.String            `tfsdk:"prompt"`
-	Qtype                   types.String            `tfsdk:"qtype"`
-	AnswerFormat            types.String            `tfsdk:"answer_format"`
-	Scope                   types.String            `tfsdk:"scope"`
-	ContextQuestionOptions  []ContextQuestionOption `tfsdk:"context_question_options"`
-	BlueprintCategories     types.Set               `tfsdk:"blueprint_categories"`
-	RegexPattern            types.String            `tfsdk:"regex_pattern"`
-	ExcludedBlueprintSeries types.Set               `tfsdk:"excluded_blueprint_series"`
+	Label                   types.String    `tfsdk:"label"`
+	Prompt                  types.String    `tfsdk:"prompt"`
+	Qtype                   types.String    `tfsdk:"qtype"`
+	AnswerFormat            types.String    `tfsdk:"answer_format"`
+	Scope                   types.String    `tfsdk:"scope"`
+	AnswerChoices           []AnswerChoices `tfsdk:"answer_choices"`
+	BlueprintCategories     types.Set       `tfsdk:"blueprint_categories"`
+	RegexPattern            types.String    `tfsdk:"regex_pattern"`
+	ExcludedBlueprintSeries types.Set       `tfsdk:"excluded_blueprint_series"`
 }
 
 func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQuestionResourceModel {
@@ -41,11 +41,11 @@ func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQues
 	data.AnswerFormat = types.StringValue(contextQuestion.AnswerFormat)
 	data.Scope = types.StringValue(contextQuestion.Scope)
 
-	var contextQuestionOptions = make([]ContextQuestionOption, 0)
-	for _, contextQuestionOption := range contextQuestion.ContextQuestionOptions {
-		contextQuestionOptions = append(contextQuestionOptions, ContextQuestionOption{Label: basetypes.NewStringValue(contextQuestionOption.Label)})
+	var contextQuestionOptions = make([]AnswerChoices, 0)
+	for _, contextQuestionOption := range contextQuestion.AnswerChoices {
+		contextQuestionOptions = append(contextQuestionOptions, AnswerChoices{Label: basetypes.NewStringValue(contextQuestionOption.Label)})
 	}
-	data.ContextQuestionOptions = contextQuestionOptions
+	data.AnswerChoices = contextQuestionOptions
 
 	var blueprintCategories []attr.Value
 	for _, blueprintCategory := range contextQuestion.BlueprintCategories {

@@ -104,7 +104,7 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 					),
 				},
 			},
-			"context_question_options": schema.SetNestedAttribute{
+			"answer_choices": schema.SetNestedAttribute{
 				MarkdownDescription: "",
 				Default:             setdefault.StaticValue(types.SetValueMust(types.ObjectType{AttrTypes: map[string]attr.Type{"label": types.StringType}}, nil)),
 				Optional:            true,
@@ -295,17 +295,17 @@ func (r *ContextQuestionResource) buildCommonFields(ctx context.Context, plan Co
 		Qtype:                   plan.Qtype.ValueString(),
 		AnswerFormat:            plan.AnswerFormat.ValueString(),
 		Scope:                   plan.Scope.ValueString(),
-		ContextQuestionOptions:  nil,
+		AnswerChoices:           nil,
 		BlueprintCategories:     nil,
 		RegexPattern:            plan.RegexPattern.ValueString(),
 		ExcludedBlueprintSeries: nil,
 	}
 
-	var contextQuestionOptions []client.ContextQuestionOption
-	for _, option := range plan.ContextQuestionOptions {
-		contextQuestionOptions = append(contextQuestionOptions, client.ContextQuestionOption{Label: option.Label.ValueString()})
+	var contextQuestionOptions []client.AnswerChoice
+	for _, option := range plan.AnswerChoices {
+		contextQuestionOptions = append(contextQuestionOptions, client.AnswerChoice{Label: option.Label.ValueString()})
 	}
-	commonFields.ContextQuestionOptions = contextQuestionOptions
+	commonFields.AnswerChoices = contextQuestionOptions
 
 	var blueprintCategories []types.String
 	_ = plan.BlueprintCategories.ElementsAs(ctx, &blueprintCategories, false)
