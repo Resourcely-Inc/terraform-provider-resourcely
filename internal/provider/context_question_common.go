@@ -41,11 +41,11 @@ func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQues
 	data.AnswerFormat = types.StringValue(contextQuestion.AnswerFormat)
 	data.Scope = types.StringValue(contextQuestion.Scope)
 
-	var contextQuestionOptions = make([]AnswerChoices, 0)
-	for _, contextQuestionOption := range contextQuestion.AnswerChoices {
-		contextQuestionOptions = append(contextQuestionOptions, AnswerChoices{Label: basetypes.NewStringValue(contextQuestionOption.Label)})
+	var answerChoices = make([]AnswerChoices, 0)
+	for _, answerChoice := range contextQuestion.AnswerChoices {
+		answerChoices = append(answerChoices, AnswerChoices{Label: basetypes.NewStringValue(answerChoice.Label)})
 	}
-	data.AnswerChoices = contextQuestionOptions
+	data.AnswerChoices = answerChoices
 
 	var blueprintCategories []attr.Value
 	for _, blueprintCategory := range contextQuestion.BlueprintCategories {

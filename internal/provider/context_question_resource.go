@@ -301,11 +301,11 @@ func (r *ContextQuestionResource) buildCommonFields(ctx context.Context, plan Co
 		ExcludedBlueprintSeries: nil,
 	}
 
-	var contextQuestionOptions []client.AnswerChoice
-	for _, option := range plan.AnswerChoices {
-		contextQuestionOptions = append(contextQuestionOptions, client.AnswerChoice{Label: option.Label.ValueString()})
+	var answerChoices []client.AnswerChoice
+	for _, choice := range plan.AnswerChoices {
+		answerChoices = append(answerChoices, client.AnswerChoice{Label: choice.Label.ValueString()})
 	}
-	commonFields.AnswerChoices = contextQuestionOptions
+	commonFields.AnswerChoices = answerChoices
 
 	var blueprintCategories []types.String
 	_ = plan.BlueprintCategories.ElementsAs(ctx, &blueprintCategories, false)
