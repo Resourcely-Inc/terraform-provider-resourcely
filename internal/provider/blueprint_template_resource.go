@@ -95,6 +95,8 @@ func (r *BlueprintTemplateResource) Schema(
 						"PROVIDER_GOOGLE",
 						"PROVIDER_GITHUB",
 						"PROVIDER_AZURE",
+						"PROVIDER_JUMPCLOUD",
+						"PROVIDER_OTHER",
 					),
 				},
 			},
