@@ -13,8 +13,12 @@ Configure Resourcely resources
 ## Example Usage
 
 ```terraform
-provider "scaffolding" {
-  # example configuration here
+terraform {
+  required_providers {
+    resourcely = {
+      source = "Resourcely-Inc/resourcely"
+    }
+  }
 }
 ```
 
