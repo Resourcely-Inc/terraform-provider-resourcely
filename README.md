@@ -1,7 +1,7 @@
 # Terraform Resourcely Provider
 
 The [Resourcly
-Provider](https://registry.terraform.io/providers/Resourcely-Inc/resourcely/latest/docs)
+Provider](https://registry.terraform.io/providers/Resourcely-Inc/resourcely/latest)
 allows [Terraform](https://terraform.io/) to manage
 [Resourcely](https://resourcely.io) blueprints, global context, etc
 
