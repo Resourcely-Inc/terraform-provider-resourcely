@@ -92,7 +92,7 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"answer_format": schema.StringAttribute{
 				MarkdownDescription: "",
-				Default:             stringdefault.StaticString("ANSWER_UNSET"),
+				Default:             stringdefault.StaticString("ANSWER_TEXT"),
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
