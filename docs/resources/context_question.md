@@ -23,9 +23,9 @@ A Resourcely Context Question
 
 ### Optional
 
+- `answer_choices` (Attributes Set) (see [below for nested schema](#nestedatt--answer_choices))
 - `answer_format` (String)
 - `blueprint_categories` (Set of String)
-- `context_question_options` (Attributes Set) (see [below for nested schema](#nestedatt--context_question_options))
 - `excluded_blueprint_series` (Set of String) series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories
 - `label` (String)
 - `regex_pattern` (String) Regex validation for the acceptable answers to the context question
@@ -36,8 +36,8 @@ A Resourcely Context Question
 - `series_id` (String) UUID for the Context Question
 - `version` (Number) Specific version of the Global Context
 
-<a id="nestedatt--context_question_options"></a>
-### Nested Schema for `context_question_options`
+<a id="nestedatt--answer_choices"></a>
+### Nested Schema for `answer_choices`
 
 Required:
 

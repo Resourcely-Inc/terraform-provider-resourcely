@@ -21,9 +21,9 @@ A resourcely ContextQuestion
 
 ### Read-Only
 
+- `answer_choices` (Attributes Set) (see [below for nested schema](#nestedatt--answer_choices))
 - `answer_format` (String)
 - `blueprint_categories` (Set of String) Resource categories the context question applies to
-- `context_question_options` (Attributes Set) (see [below for nested schema](#nestedatt--context_question_options))
 - `excluded_blueprint_series` (Set of String) series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories
 - `id` (String) UUID for this version.
 - `label` (String)
@@ -33,8 +33,8 @@ A resourcely ContextQuestion
 - `scope` (String)
 - `version` (Number) Specific version of the global context
 
-<a id="nestedatt--context_question_options"></a>
-### Nested Schema for `context_question_options`
+<a id="nestedatt--answer_choices"></a>
+### Nested Schema for `answer_choices`
 
 Read-Only:
 

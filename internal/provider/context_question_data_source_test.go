@@ -21,7 +21,7 @@ func TestAccContextQuestionDataSource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "prompt", "what is your prompt?"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "qtype", "QTYPE_SINGLE_SELECT"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "blueprint_categories.0", "BLUEPRINT_BLOB_STORAGE"),
-					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "context_question_options.0.label", "tenant-context Option 1"),
+					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "answer_choices.0.label", "tenant-context Option 1"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "label", "marketing"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "regex_pattern", "regex"),
 				),
@@ -36,7 +36,7 @@ resource "resourcely_context_question" "basic" {
 	qtype = "QTYPE_SINGLE_SELECT"
 	scope = "SCOPE_TENANT"
 	blueprint_categories = ["BLUEPRINT_BLOB_STORAGE"]
-	context_question_options = [{label: "tenant-context Option 1"}]
+	answer_choices = [{label: "tenant-context Option 1"}]
 	label = "marketing"
 	regex_pattern = "regex"
 	excluded_blueprint_series = []

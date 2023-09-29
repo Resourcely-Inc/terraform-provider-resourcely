@@ -66,7 +66,7 @@ func (d *ContextQuestionDataSource) Schema(_ context.Context, _ datasource.Schem
 				MarkdownDescription: "",
 				Computed:            true,
 			},
-			"context_question_options": schema.SetNestedAttribute{
+			"answer_choices": schema.SetNestedAttribute{
 				MarkdownDescription: "",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{

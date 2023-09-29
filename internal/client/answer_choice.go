@@ -1,5 +1,5 @@
 package client
 
-type ContextQuestionOption struct {
+type AnswerChoice struct {
 	Label string `json:"label"`
 }
