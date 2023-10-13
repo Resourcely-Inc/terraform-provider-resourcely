@@ -7,6 +7,12 @@ on:
   push:
     tags:
       - 'v*'
+  pull_request:
+    types:
+      # explicitly specifying the event that triggers the workflow to provide clarity
+      - closed
+    branches:
+      - main
 
 # Releases need permissions to read and write the repository contents.
 # GitHub considers creating releases and uploading assets as writing contents.
@@ -14,7 +20,25 @@ permissions:
   contents: write
 
 jobs:
+  determine_version_bump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      bump: ${{ steps.set-bump.outputs.bump }}
+    steps:
+      - name: Check PR for release tags
+        id: set-bump
+        run: |
+          if echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "release:major"; then
+            echo "::set-output name=bump::major"
+          elif echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "release:minor"; then
+            echo "::set-output name=bump::minor"
+          else
+            echo "::set-output name=bump::patch"
+          fi
+
   goreleaser:
+    needs: [determine_version_bump]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
@@ -39,3 +63,15 @@ jobs:
           # GitHub sets the GITHUB_TOKEN secret automatically.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
+  release-on-push:
+    needs: [determine_version_bump]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: ${{ needs.determine_version_bump.outputs.bump }}
+          tag_prefix: v
