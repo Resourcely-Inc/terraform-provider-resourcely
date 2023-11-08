@@ -12,25 +12,25 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ datasource.DataSource = &BlueprintTemplateDataSource{}
+var _ datasource.DataSource = &BlueprintDataSource{}
 
-func NewBlueprintTemplateDataSource() datasource.DataSource {
-	return &BlueprintTemplateDataSource{}
+func NewBlueprintDataSource() datasource.DataSource {
+	return &BlueprintDataSource{}
 }
 
-// BlueprintTemplateDataSource defines the data source implementation.
-type BlueprintTemplateDataSource struct {
-	service *client.BlueprintTemplatesService
+// BlueprintDataSource defines the data source implementation.
+type BlueprintDataSource struct {
+	service *client.BlueprintsService
 }
 
-func (d *BlueprintTemplateDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_blueprint_template"
+func (d *BlueprintDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_blueprint"
 }
 
-func (d *BlueprintTemplateDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *BlueprintDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A resourcely blueprintTemplate",
+		MarkdownDescription: "A resourcely blueprint",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -38,11 +38,11 @@ func (d *BlueprintTemplateDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the blueprint template",
+				MarkdownDescription: "UUID for the blueprint",
 				Required:            true,
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the blueprint template",
+				MarkdownDescription: "Specific version of the blueprint",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -82,7 +82,7 @@ func (d *BlueprintTemplateDataSource) Schema(_ context.Context, _ datasource.Sch
 	}
 }
 
-func (d *BlueprintTemplateDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *BlueprintDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
@@ -99,29 +99,29 @@ func (d *BlueprintTemplateDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 
-	d.service = client.BlueprintTemplates
+	d.service = client.Blueprints
 }
 
-func (d *BlueprintTemplateDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *BlueprintDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	// Read the config
-	var config BlueprintTemplateResourceModel
+	var config BlueprintResourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	blueprintTemplateSeriesId := config.SeriesId.ValueString()
+	blueprintSeriesId := config.SeriesId.ValueString()
 
-	blueprintTemplate, _, err := d.service.GetBlueprintTemplateBySeriesId(ctx, blueprintTemplateSeriesId)
+	blueprint, _, err := d.service.GetBlueprintBySeriesId(ctx, blueprintSeriesId)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error reading blueprintTemplate",
-			"Could not read blueprintTemplate series id "+blueprintTemplateSeriesId+": "+err.Error(),
+			"Error reading blueprint",
+			"Could not read blueprint series id "+blueprintSeriesId+": "+err.Error(),
 		)
 		return
 	}
 
 	// Overwrite state with refreshed value
-	state := FlattenBlueprintTemplate(blueprintTemplate)
+	state := FlattenBlueprint(blueprint)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

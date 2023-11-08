@@ -277,8 +277,8 @@ func (r *ContextQuestionResource) Delete(ctx context.Context, req resource.Delet
 	_, err := r.service.DeleteContextQuestion(ctx, state.SeriesId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error deleting blueprinteTemplate",
-			"Could not delete blueprinteTemplate series id "+state.SeriesId.ValueString()+": "+err.Error(),
+			"Error deleting context question",
+			"Could not delete context question series id "+state.SeriesId.ValueString()+": "+err.Error(),
 		)
 		return
 	}

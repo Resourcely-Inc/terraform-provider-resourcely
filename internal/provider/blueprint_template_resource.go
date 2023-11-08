@@ -23,35 +23,35 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces
 var (
-	_ resource.Resource                = &BlueprintTemplateResource{}
-	_ resource.ResourceWithImportState = &BlueprintTemplateResource{}
+	_ resource.Resource                = &BlueprintResource{}
+	_ resource.ResourceWithImportState = &BlueprintResource{}
 )
 
-func NewBlueprintTemplateResource() resource.Resource {
-	return &BlueprintTemplateResource{}
+func NewBlueprintResource() resource.Resource {
+	return &BlueprintResource{}
 }
 
-// BlueprintTemplateResource defines the resource implementation.
-type BlueprintTemplateResource struct {
-	service *client.BlueprintTemplatesService
+// BlueprintResource defines the resource implementation.
+type BlueprintResource struct {
+	service *client.BlueprintsService
 }
 
-func (r *BlueprintTemplateResource) Metadata(
+func (r *BlueprintResource) Metadata(
 	_ context.Context,
 	req resource.MetadataRequest,
 	resp *resource.MetadataResponse,
 ) {
-	resp.TypeName = req.ProviderTypeName + "_blueprint_template"
+	resp.TypeName = req.ProviderTypeName + "_blueprint"
 }
 
-func (r *BlueprintTemplateResource) Schema(
+func (r *BlueprintResource) Schema(
 	_ context.Context,
 	_ resource.SchemaRequest,
 	resp *resource.SchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A Resourcely Blueprint Template",
+		MarkdownDescription: "A Resourcely Blueprint",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -59,14 +59,14 @@ func (r *BlueprintTemplateResource) Schema(
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the blueprint template",
+				MarkdownDescription: "UUID for the blueprint",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the blueprint template",
+				MarkdownDescription: "Specific version of the blueprint",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -89,6 +89,7 @@ func (r *BlueprintTemplateResource) Schema(
 			"cloud_provider": schema.StringAttribute{
 				MarkdownDescription: "",
 				Required:            true,
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.RequiresReplace()},
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"PROVIDER_AMAZON",
@@ -142,7 +143,7 @@ func (r *BlueprintTemplateResource) Schema(
 	}
 }
 
-func (r *BlueprintTemplateResource) Configure(
+func (r *BlueprintResource) Configure(
 	_ context.Context,
 	req resource.ConfigureRequest,
 	resp *resource.ConfigureResponse,
@@ -166,88 +167,89 @@ func (r *BlueprintTemplateResource) Configure(
 		return
 	}
 
-	r.service = client.BlueprintTemplates
+	r.service = client.Blueprints
 }
 
-func (r *BlueprintTemplateResource) Create(
+func (r *BlueprintResource) Create(
 	ctx context.Context,
 	req resource.CreateRequest,
 	resp *resource.CreateResponse,
 ) {
 	// Get the plan
-	var plan BlueprintTemplateResourceModel
+	var plan BlueprintResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Create the resource
-	newBlueprintTemplate := &client.NewBlueprintTemplate{
-		CommonBlueprintTemplateFields: r.buildCommonFields(ctx, plan),
-		Provider:                      plan.Provider.ValueString(),
+	newBlueprint := &client.NewBlueprint{
+		CommonBlueprintFields: r.buildCommonFields(ctx, plan),
+		Provider:              plan.Provider.ValueString(),
+		IsTerraformManaged:    true,
 	}
 
-	blueprintTemplate, _, err := r.service.CreateBlueprintTemplate(ctx, newBlueprintTemplate)
+	blueprint, _, err := r.service.CreateBlueprint(ctx, newBlueprint)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating blueprint template",
-			"Could not create blueprint template: "+err.Error(),
+			"Error creating blueprint",
+			"Could not create blueprint: "+err.Error(),
 		)
 		return
 	}
 
 	// Set the resource state
-	state := FlattenBlueprintTemplate(blueprintTemplate)
+	state := FlattenBlueprint(blueprint)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *BlueprintTemplateResource) Read(
+func (r *BlueprintResource) Read(
 	ctx context.Context,
 	req resource.ReadRequest,
 	resp *resource.ReadResponse,
 ) {
 	// Get the current state
-	var state BlueprintTemplateResourceModel
+	var state BlueprintResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Refresh value from the remote API
-	blueprintTemplate, httpResp, err := r.service.GetBlueprintTemplateBySeriesId(
+	blueprint, httpResp, err := r.service.GetBlueprintBySeriesId(
 		ctx,
 		state.SeriesId.ValueString(),
 	)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning(
-				"Blueprint template "+state.SeriesId.ValueString()+" was not found in Resourcely",
-				"The blueprint template may have been deleted outside of Terraform",
+				"Blueprint "+state.SeriesId.ValueString()+" was not found in Resourcely",
+				"The blueprint may have been deleted outside of Terraform",
 			)
 			resp.State.RemoveResource(ctx)
 			return
 		} else {
 			resp.Diagnostics.AddError(
-				"Error reading blueprint template",
-				"Could not read blueprint template series id "+state.SeriesId.ValueString()+": "+err.Error(),
+				"Error reading blueprint",
+				"Could not read blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
 			)
 			return
 		}
 	}
 
 	// Overwrite state with refreshed value
-	state = FlattenBlueprintTemplate(blueprintTemplate)
+	state = FlattenBlueprint(blueprint)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *BlueprintTemplateResource) Update(
+func (r *BlueprintResource) Update(
 	ctx context.Context,
 	req resource.UpdateRequest,
 	resp *resource.UpdateResponse,
 ) {
 	// Retrieve the plan and state
-	var plan BlueprintTemplateResourceModel
-	var state BlueprintTemplateResourceModel
+	var plan BlueprintResourceModel
+	var state BlueprintResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -255,48 +257,48 @@ func (r *BlueprintTemplateResource) Update(
 	}
 
 	// Update the resource
-	updatedBlueprintTemplate := &client.UpdatedBlueprintTemplate{
-		SeriesId:                      state.SeriesId.ValueString(),
-		CommonBlueprintTemplateFields: r.buildCommonFields(ctx, plan),
+	updatedBlueprint := &client.UpdatedBlueprint{
+		SeriesId:              state.SeriesId.ValueString(),
+		CommonBlueprintFields: r.buildCommonFields(ctx, plan),
 	}
 
-	blueprintTemplate, _, err := r.service.UpdateBlueprintTemplate(ctx, updatedBlueprintTemplate)
+	blueprint, _, err := r.service.UpdateBlueprint(ctx, updatedBlueprint)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error updating blueprint template",
-			"Could not update blueprint template series id "+state.SeriesId.ValueString()+": "+err.Error(),
+			"Error updating blueprint",
+			"Could not update blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
 		)
 		return
 	}
 
 	// Set the resource state
-	state = FlattenBlueprintTemplate(blueprintTemplate)
+	state = FlattenBlueprint(blueprint)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *BlueprintTemplateResource) Delete(
+func (r *BlueprintResource) Delete(
 	ctx context.Context,
 	req resource.DeleteRequest,
 	resp *resource.DeleteResponse,
 ) {
 	// Retrieve from state
-	var state *BlueprintTemplateResourceModel
+	var state *BlueprintResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	_, err := r.service.DeleteBlueprintTemplate(ctx, state.SeriesId.ValueString())
+	_, err := r.service.DeleteBlueprint(ctx, state.SeriesId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error deleting blueprinteTemplate",
-			"Could not delete blueprinteTemplate series id "+state.SeriesId.ValueString()+": "+err.Error(),
+			"Error deleting blueprint",
+			"Could not delete blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
 		)
 		return
 	}
 }
 
-func (r *BlueprintTemplateResource) ImportState(
+func (r *BlueprintResource) ImportState(
 	ctx context.Context,
 	req resource.ImportStateRequest,
 	resp *resource.ImportStateResponse,
@@ -304,11 +306,11 @@ func (r *BlueprintTemplateResource) ImportState(
 	resource.ImportStatePassthroughID(ctx, path.Root("series_id"), req, resp)
 }
 
-func (r *BlueprintTemplateResource) buildCommonFields(
+func (r *BlueprintResource) buildCommonFields(
 	ctx context.Context,
-	plan BlueprintTemplateResourceModel,
-) client.CommonBlueprintTemplateFields {
-	commonFields := client.CommonBlueprintTemplateFields{
+	plan BlueprintResourceModel,
+) client.CommonBlueprintFields {
+	commonFields := client.CommonBlueprintFields{
 		Name:        plan.Name.ValueString(),
 		Description: plan.Description.ValueString(),
 		Content:     plan.Content.ValueString(),
