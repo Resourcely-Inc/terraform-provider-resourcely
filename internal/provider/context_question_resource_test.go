@@ -26,6 +26,7 @@ func TestAccContextQuestionResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_context_question.basic", "answer_choices.0.label", "tenant-context Option 1"),
 					resource.TestCheckResourceAttr("resourcely_context_question.basic", "label", "marketing"),
 					resource.TestCheckResourceAttr("resourcely_context_question.basic", "regex_pattern", `regex`),
+					resource.TestCheckResourceAttr("resourcely_context_question.basic", "priority", "2"),
 				),
 			},
 			// ImportState testing
@@ -61,6 +62,7 @@ func TestAccContextQuestionResource_useDefaults(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "prompt", "what is your prompt?"),
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "qtype", "QTYPE_TEXT"),
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "blueprint_categories.0", "BLUEPRINT_BLOB_STORAGE"),
+					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "priority", "0"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -93,6 +95,7 @@ resource "resourcely_context_question" "basic" {
 	label = "marketing"
 	regex_pattern = "regex"
 	excluded_blueprint_series = []
+	priority = 2
 }
 `, prompt)
 }
