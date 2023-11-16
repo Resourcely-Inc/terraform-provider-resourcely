@@ -27,6 +27,7 @@ A resourcely ContextQuestion
 - `excluded_blueprint_series` (Set of String) series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories
 - `id` (String) UUID for this version.
 - `label` (String)
+- `priority` (Number) Priority of this question, relative to others. 0=high, 1=medium, 2=low
 - `prompt` (String)
 - `qtype` (String)
 - `regex_pattern` (String) Regex validation for the acceptable answers to the context question
