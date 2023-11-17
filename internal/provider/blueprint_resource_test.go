@@ -26,6 +26,7 @@ func TestAccBlueprintResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "categories.0", "BLUEPRINT_BLOB_STORAGE"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "labels.0", "marketing"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "guidance", "How to use this blueprint"),
+					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "excluded_context_question_series.#", "0"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "content",
 						`resource "aws_s3_bucket" "{{ resource_name }}" {
   bucket = "{{ bucket }}"

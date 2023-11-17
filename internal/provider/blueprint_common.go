@@ -19,10 +19,11 @@ type BlueprintResourceModel struct {
 	Description types.String `tfsdk:"description"`
 	Provider    types.String `tfsdk:"cloud_provider"`
 
-	Content    types.String `tfsdk:"content"`
-	Categories types.Set    `tfsdk:"categories"`
-	Guidance   types.String `tfsdk:"guidance"`
-	Labels     types.Set    `tfsdk:"labels"`
+	Content                       types.String `tfsdk:"content"`
+	Categories                    types.Set    `tfsdk:"categories"`
+	Guidance                      types.String `tfsdk:"guidance"`
+	Labels                        types.Set    `tfsdk:"labels"`
+	ExcludedContextQuestionSeries types.Set    `tfsdk:"excluded_context_question_series"`
 }
 
 func FlattenBlueprint(blueprint *client.Blueprint) BlueprintResourceModel {
@@ -51,6 +52,12 @@ func FlattenBlueprint(blueprint *client.Blueprint) BlueprintResourceModel {
 		categories = append(categories, basetypes.NewStringValue(category))
 	}
 	data.Categories = types.SetValueMust(basetypes.StringType{}, categories)
+
+	var excludedContextQuestionSeries []attr.Value
+	for _, excludedCQS := range blueprint.ExcludedContextQuestionSeries {
+		excludedContextQuestionSeries = append(excludedContextQuestionSeries, basetypes.NewStringValue(excludedCQS))
+	}
+	data.ExcludedContextQuestionSeries = types.SetValueMust(basetypes.StringType{}, excludedContextQuestionSeries)
 
 	return data
 }

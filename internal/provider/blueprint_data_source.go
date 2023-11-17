@@ -78,6 +78,11 @@ func (d *BlueprintDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:            true,
 				MarkdownDescription: "",
 			},
+			"excluded_context_question_series": schema.SetAttribute{
+				ElementType:         basetypes.StringType{},
+				Computed:            true,
+				MarkdownDescription: "series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
+			},
 		},
 	}
 }
