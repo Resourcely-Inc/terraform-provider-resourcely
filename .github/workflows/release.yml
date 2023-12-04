@@ -5,6 +5,13 @@ name: Release
 # "v*" (e.g. v0.1.0) is created.
 on:
   push:
+    tags:
+      - 'v*'
+  pull_request:
+    types:
+  push:
+    branches: ["main"]
+      - closed
     branches:
       - main
 
