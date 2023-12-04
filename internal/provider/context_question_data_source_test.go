@@ -24,6 +24,7 @@ func TestAccContextQuestionDataSource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "answer_choices.0.label", "tenant-context Option 1"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "label", "marketing"),
 					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "regex_pattern", "regex"),
+					resource.TestCheckResourceAttr("data.resourcely_context_question.by_series_id", "priority", "2"),
 				),
 			},
 		},
@@ -40,6 +41,7 @@ resource "resourcely_context_question" "basic" {
 	label = "marketing"
 	regex_pattern = "regex"
 	excluded_blueprint_series = []
+	priority = 2
 }
 
 data "resourcely_context_question" "by_series_id" {

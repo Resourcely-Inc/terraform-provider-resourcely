@@ -27,6 +27,7 @@ type ContextQuestionResourceModel struct {
 	BlueprintCategories     types.Set       `tfsdk:"blueprint_categories"`
 	RegexPattern            types.String    `tfsdk:"regex_pattern"`
 	ExcludedBlueprintSeries types.Set       `tfsdk:"excluded_blueprint_series"`
+	Priority                types.Int64     `tfsdk:"priority"`
 }
 
 func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQuestionResourceModel {
@@ -40,6 +41,7 @@ func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQues
 	data.Qtype = types.StringValue(contextQuestion.Qtype)
 	data.AnswerFormat = types.StringValue(contextQuestion.AnswerFormat)
 	data.Scope = types.StringValue(contextQuestion.Scope)
+	data.Priority = types.Int64Value(contextQuestion.Priority)
 
 	var answerChoices = make([]AnswerChoices, 0)
 	for _, answerChoice := range contextQuestion.AnswerChoices {

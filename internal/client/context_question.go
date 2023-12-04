@@ -11,6 +11,7 @@ type ContextQuestionsService service
 
 type NewContextQuestion struct {
 	CommonContextQuestionFields
+	IsTerraformManaged bool `json:"is_terraform_managed"`
 }
 
 type UpdatedContextQuestion struct {
@@ -28,6 +29,7 @@ type CommonContextQuestionFields struct {
 	BlueprintCategories     []string       `json:"blueprint_categories"`
 	RegexPattern            string         `json:"regex_pattern"`
 	ExcludedBlueprintSeries []string       `json:"excluded_blueprint_series"`
+	Priority                int64          `json:"priority"`
 }
 
 type ContextQuestion struct {

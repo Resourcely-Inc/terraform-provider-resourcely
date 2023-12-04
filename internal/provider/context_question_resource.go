@@ -3,6 +3,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -152,6 +154,15 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 				Optional:            true,
 				Computed:            true,
 			},
+			"priority": schema.Int64Attribute{
+				Default:             int64default.StaticInt64(0),
+				MarkdownDescription: "Priority of this question, relative to others. 0=high, 1=medium, 2=low",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(0, 2),
+				},
+			},
 		},
 	}
 }
@@ -188,6 +199,7 @@ func (r *ContextQuestionResource) Create(ctx context.Context, req resource.Creat
 	// Create the resource
 	newContextQuestion := &client.NewContextQuestion{
 		CommonContextQuestionFields: r.buildCommonFields(ctx, plan),
+		IsTerraformManaged:          true,
 	}
 
 	ContextQuestion, _, err := r.service.CreateContextQuestion(ctx, newContextQuestion)
@@ -299,6 +311,7 @@ func (r *ContextQuestionResource) buildCommonFields(ctx context.Context, plan Co
 		BlueprintCategories:     nil,
 		RegexPattern:            plan.RegexPattern.ValueString(),
 		ExcludedBlueprintSeries: nil,
+		Priority:                plan.Priority.ValueInt64(),
 	}
 
 	var answerChoices []client.AnswerChoice

@@ -92,6 +92,10 @@ func (d *ContextQuestionDataSource) Schema(_ context.Context, _ datasource.Schem
 				Computed:            true,
 				MarkdownDescription: "series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories",
 			},
+			"priority": schema.Int64Attribute{
+				MarkdownDescription: "Priority of this question, relative to others. 0=high, 1=medium, 2=low",
+				Computed:            true,
+			},
 		},
 	}
 }
