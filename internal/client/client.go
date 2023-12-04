@@ -51,9 +51,9 @@ type Client struct {
 	common service
 
 	// Services
-	BlueprintTemplates *BlueprintTemplatesService
-	ContextQuestions   *ContextQuestionsService
-	System             *SystemService
+	Blueprints       *BlueprintsService
+	ContextQuestions *ContextQuestionsService
+	System           *SystemService
 }
 
 type service struct {
@@ -126,7 +126,7 @@ func NewClient(httpClient *retryablehttp.Client, host string, authToken string) 
 
 	c := &Client{Client: httpClient, BasePath: BasePath, BaseURL: baseURL, UserAgent: DefaultUserAgent, AuthToken: authToken}
 	c.common.Client = c
-	c.BlueprintTemplates = (*BlueprintTemplatesService)(&c.common)
+	c.Blueprints = (*BlueprintsService)(&c.common)
 	c.ContextQuestions = (*ContextQuestionsService)(&c.common)
 	c.System = (*SystemService)(&c.common)
 	return c, nil

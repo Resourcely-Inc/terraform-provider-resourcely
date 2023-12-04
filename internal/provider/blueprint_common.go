@@ -8,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// BlueprintTemplateResourceModel describes the resource data model.
-type BlueprintTemplateResourceModel struct {
+// BlueprintResourceModel describes the resource data model.
+type BlueprintResourceModel struct {
 	Id       types.String `tfsdk:"id"`
 	SeriesId types.String `tfsdk:"series_id"`
 	Version  types.Int64  `tfsdk:"version"`
@@ -25,29 +25,29 @@ type BlueprintTemplateResourceModel struct {
 	Labels     types.Set    `tfsdk:"labels"`
 }
 
-func FlattenBlueprintTemplate(blueprintTemplate *client.BlueprintTemplate) BlueprintTemplateResourceModel {
-	var data BlueprintTemplateResourceModel
+func FlattenBlueprint(blueprint *client.Blueprint) BlueprintResourceModel {
+	var data BlueprintResourceModel
 
-	data.Id = types.StringValue(blueprintTemplate.Id)
-	data.SeriesId = types.StringValue(blueprintTemplate.SeriesId)
-	data.Version = types.Int64Value(blueprintTemplate.Version)
-	data.Scope = types.StringValue(blueprintTemplate.Scope)
+	data.Id = types.StringValue(blueprint.Id)
+	data.SeriesId = types.StringValue(blueprint.SeriesId)
+	data.Version = types.Int64Value(blueprint.Version)
+	data.Scope = types.StringValue(blueprint.Scope)
 
-	data.Name = types.StringValue(blueprintTemplate.Name)
-	data.Description = types.StringValue(blueprintTemplate.Description)
-	data.Provider = types.StringValue(blueprintTemplate.Provider)
+	data.Name = types.StringValue(blueprint.Name)
+	data.Description = types.StringValue(blueprint.Description)
+	data.Provider = types.StringValue(blueprint.Provider)
 
-	data.Content = types.StringValue(blueprintTemplate.Content)
-	data.Guidance = types.StringValue(blueprintTemplate.Guidance)
+	data.Content = types.StringValue(blueprint.Content)
+	data.Guidance = types.StringValue(blueprint.Guidance)
 
 	var labels []attr.Value
-	for _, label := range blueprintTemplate.Labels {
+	for _, label := range blueprint.Labels {
 		labels = append(labels, basetypes.NewStringValue(label.Label))
 	}
 	data.Labels = types.SetValueMust(basetypes.StringType{}, labels)
 
 	var categories []attr.Value
-	for _, category := range blueprintTemplate.Categories {
+	for _, category := range blueprint.Categories {
 		categories = append(categories, basetypes.NewStringValue(category))
 	}
 	data.Categories = types.SetValueMust(basetypes.StringType{}, categories)
