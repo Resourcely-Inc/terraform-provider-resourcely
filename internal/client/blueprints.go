@@ -30,12 +30,13 @@ type UpdatedBlueprint struct {
 }
 
 type CommonBlueprintFields struct {
-	Name        string   `json:"name"`
-	Description string   `json:"description,omitempty"`
-	Content     string   `json:"content"`
-	Categories  []string `json:"categories"`
-	Guidance    string   `json:"guidance"`
-	Labels      []Label  `json:"labels"`
+	Name                          string   `json:"name"`
+	Description                   string   `json:"description,omitempty"`
+	Content                       string   `json:"content"`
+	Categories                    []string `json:"categories"`
+	Guidance                      string   `json:"guidance"`
+	Labels                        []Label  `json:"labels"`
+	ExcludedContextQuestionSeries []string `json:"excluded_context_question_series"`
 }
 
 func (s *BlueprintsService) GetBlueprintBySeriesId(ctx context.Context, seriesId string) (*Blueprint, *http.Response, error) {

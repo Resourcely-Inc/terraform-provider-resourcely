@@ -139,6 +139,13 @@ func (r *BlueprintResource) Schema(
 					),
 				},
 			},
+			"excluded_context_question_series": schema.SetAttribute{
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
+				ElementType:         basetypes.StringType{},
+				Computed:            true,
+				Optional:            true,
+				MarkdownDescription: "series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
+			},
 		},
 	}
 }
@@ -311,12 +318,13 @@ func (r *BlueprintResource) buildCommonFields(
 	plan BlueprintResourceModel,
 ) client.CommonBlueprintFields {
 	commonFields := client.CommonBlueprintFields{
-		Name:        plan.Name.ValueString(),
-		Description: plan.Description.ValueString(),
-		Content:     plan.Content.ValueString(),
-		Guidance:    plan.Guidance.ValueString(),
-		Categories:  nil,
-		Labels:      nil,
+		Name:                          plan.Name.ValueString(),
+		Description:                   plan.Description.ValueString(),
+		Content:                       plan.Content.ValueString(),
+		Guidance:                      plan.Guidance.ValueString(),
+		Categories:                    nil,
+		Labels:                        nil,
+		ExcludedContextQuestionSeries: nil,
 	}
 
 	var labels []string
@@ -326,6 +334,7 @@ func (r *BlueprintResource) buildCommonFields(
 	}
 
 	plan.Categories.ElementsAs(ctx, &commonFields.Categories, false)
+	plan.ExcludedContextQuestionSeries.ElementsAs(ctx, &commonFields.ExcludedContextQuestionSeries, false)
 
 	return commonFields
 }

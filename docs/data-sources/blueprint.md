@@ -25,6 +25,7 @@ A resourcely blueprint
 - `cloud_provider` (String)
 - `content` (String)
 - `description` (String)
+- `excluded_context_question_series` (Set of String) series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories
 - `guidance` (String)
 - `id` (String) UUID for this version.
 - `labels` (Set of String)

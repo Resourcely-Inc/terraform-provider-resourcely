@@ -25,6 +25,7 @@ A Resourcely Blueprint
 
 - `categories` (Set of String)
 - `description` (String)
+- `excluded_context_question_series` (Set of String) series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories
 - `guidance` (String)
 - `labels` (Set of String)
 - `scope` (String)
