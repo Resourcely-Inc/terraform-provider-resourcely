@@ -9,8 +9,7 @@ on:
       - 'v*'
   pull_request:
     types:
-  push:
-    branches: ["main"]
+      # explicitly specifying the event that triggers the workflow to provide clarity
       - closed
     branches:
       - main
