@@ -95,6 +95,7 @@ func (r *BlueprintResource) Schema(
 						"PROVIDER_AMAZON",
 						"PROVIDER_GOOGLE",
 						"PROVIDER_GITHUB",
+						"PROVIDER_GITLAB",
 						"PROVIDER_AZURE",
 						"PROVIDER_JUMPCLOUD",
 						"PROVIDER_OTHER",
