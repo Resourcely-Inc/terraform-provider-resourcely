@@ -98,6 +98,7 @@ func (r *BlueprintResource) Schema(
 						"PROVIDER_GITLAB",
 						"PROVIDER_AZURE",
 						"PROVIDER_JUMPCLOUD",
+						"PROVIDER_SNOWFLAKE",
 						"PROVIDER_OTHER",
 					),
 				},
