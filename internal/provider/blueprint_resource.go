@@ -103,6 +103,7 @@ func (r *BlueprintResource) Schema(
 						"PROVIDER_SPACELIFT",
 						"PROVIDER_RESOURCELY",
 						"PROVIDER_CONDUCTORONE",
+						"PROVIDER_OKTA",
 						"PROVIDER_OTHER",
 					),
 				},
