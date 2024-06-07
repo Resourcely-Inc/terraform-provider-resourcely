@@ -74,9 +74,7 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"label": schema.StringAttribute{
 				MarkdownDescription: "",
-				Default:             stringdefault.StaticString(""),
-				Optional:            true,
-				Computed:            true,
+				Required:            true,
 			},
 			"prompt": schema.StringAttribute{
 				MarkdownDescription: "",

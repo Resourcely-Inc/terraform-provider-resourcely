@@ -63,6 +63,7 @@ func TestAccContextQuestionResource_useDefaults(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "qtype", "QTYPE_TEXT"),
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "blueprint_categories.0", "BLUEPRINT_BLOB_STORAGE"),
 					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "priority", "0"),
+					resource.TestCheckResourceAttr("resourcely_context_question.usedefaults", "label", "marketing"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -107,6 +108,7 @@ resource "resourcely_context_question" "usedefaults" {
 	qtype = "QTYPE_TEXT"
 	scope = "SCOPE_TENANT"
 	blueprint_categories = ["BLUEPRINT_BLOB_STORAGE"]
+	label = "marketing"
 }
 `, prompt)
 }
