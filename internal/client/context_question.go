@@ -23,7 +23,7 @@ type CommonContextQuestionFields struct {
 	Label                   string         `json:"label"`
 	Prompt                  string         `json:"prompt"`
 	Qtype                   string         `json:"qtype"`
-	AnswerFormat            string         `json:"answer_format,omit_empty"`
+	AnswerFormat            string         `json:"answer_format,omitempty"`
 	Scope                   string         `json:"scope"`
 	AnswerChoices           []AnswerChoice `json:"answer_choices"`
 	BlueprintCategories     []string       `json:"blueprint_categories"`
