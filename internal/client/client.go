@@ -54,6 +54,7 @@ type Client struct {
 	Blueprints       *BlueprintsService
 	ContextQuestions *ContextQuestionsService
 	System           *SystemService
+	Guardrails       *GuardrailsService
 }
 
 type service struct {
@@ -128,6 +129,7 @@ func NewClient(httpClient *retryablehttp.Client, host string, authToken string) 
 	c.common.Client = c
 	c.Blueprints = (*BlueprintsService)(&c.common)
 	c.ContextQuestions = (*ContextQuestionsService)(&c.common)
+	c.Guardrails = (*GuardrailsService)(&c.common)
 	c.System = (*SystemService)(&c.common)
 	return c, nil
 }
