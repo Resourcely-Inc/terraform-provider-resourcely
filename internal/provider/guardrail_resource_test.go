@@ -26,10 +26,9 @@ func TestAccGuardrailResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_guardrail.basic", "category", "GUARDRAIL_BEST_PRACTICES"),
 					resource.TestCheckResourceAttr("resourcely_guardrail.basic", "state", "GUARDRAIL_STATE_EVALUATE_ONLY"),
 					resource.TestCheckResourceAttr("resourcely_guardrail.basic", "content",
-						`guardrail "basic test"
-  when aws_s3_bucket
-  require bucket = "acme-{team}-{project}"
-end
+						`GUARDRAIL "basic test"
+  WHEN aws_s3_bucket
+    REQUIRE bucket = "acme-{team}-{project}"
 `),
 				),
 			},
@@ -75,10 +74,9 @@ resource "resourcely_guardrail" "basic" {
   category = "GUARDRAIL_BEST_PRACTICES"
   state = "GUARDRAIL_STATE_EVALUATE_ONLY"
   content = <<-EOT
-              guardrail "basic test"
-                when aws_s3_bucket
-                require bucket = "acme-{team}-{project}"
-              end
+              GUARDRAIL "basic test"
+                WHEN aws_s3_bucket
+                  REQUIRE bucket = "acme-{team}-{project}"
             EOT
 }
 `, name)
