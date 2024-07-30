@@ -24,10 +24,9 @@ func TestAccGuardrailDataSource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.resourcely_guardrail.by_series_id", "category", "GUARDRAIL_BEST_PRACTICES"),
 					resource.TestCheckResourceAttr("data.resourcely_guardrail.by_series_id", "state", "GUARDRAIL_STATE_EVALUATE_ONLY"),
 					resource.TestCheckResourceAttr("data.resourcely_guardrail.by_series_id", "content",
-						`guardrail "basic test"
-when aws_s3_bucket
-require bucket = "acme-{team}-{project}"
-end
+						`GUARDRAIL "basic test"
+  WHEN aws_s3_bucket
+    REQUIRE bucket = "acme-{team}-{project}"
 `),
 				),
 			},
@@ -43,10 +42,9 @@ resource "resourcely_guardrail" "basic_data_source" {
   category = "GUARDRAIL_BEST_PRACTICES"
   state = "GUARDRAIL_STATE_EVALUATE_ONLY"
   content = <<-EOT
-              guardrail "basic test"
-              when aws_s3_bucket
-              require bucket = "acme-{team}-{project}"
-              end
+              GUARDRAIL "basic test"
+                WHEN aws_s3_bucket
+                  REQUIRE bucket = "acme-{team}-{project}"
             EOT
 }
 
