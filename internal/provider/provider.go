@@ -148,6 +148,7 @@ func (p *ResourcelyProvider) Resources(ctx context.Context) []func() resource.Re
 	return []func() resource.Resource{
 		NewBlueprintResource,
 		NewContextQuestionResource,
+		NewGuardrailResource,
 	}
 }
 
@@ -155,6 +156,7 @@ func (p *ResourcelyProvider) DataSources(ctx context.Context) []func() datasourc
 	return []func() datasource.DataSource{
 		NewBlueprintDataSource,
 		NewContextQuestionDataSource,
+		NewGuardrailDataSource,
 	}
 }
 
