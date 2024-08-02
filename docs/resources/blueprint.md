@@ -17,13 +17,13 @@ A Resourcely Blueprint
 
 ### Required
 
-- `cloud_provider` (String)
+- `cloud_provider` (String) The cloud provider that this blueprint targets. Can be one of `PROVIDER_AMAZON`, `PROVIDER_AZURE`, `PROVIDER_CONDUCTORONE`, `PROVIDER_DATADOG`, `PROVIDER_GITHUB`, `PROVIDER_GITLAB`, `PROVIDER_GOOGLE`, `PROVIDER_JUMPCLOUD`, `PROVIDER_RESOURCELY`, `PROVIDER_SNOWFLAKE`, `PROVIDER_SPACELIFT`, `PROVIDER_OTHER`
 - `content` (String)
 - `name` (String)
 
 ### Optional
 
-- `categories` (Set of String)
+- `categories` (Set of String) The category to assign to this blueprint. Can be one of `BLUEPRINT_ASYNC_PROCESSING`, `BLUEPRINT_BLOB_STORAGE`, `BLUEPRINT_COMPUTE`, `BLUEPRINT_CONTAINERIZATION`, `BLUEPRINT_DATABASE`, `BLUEPRINT_GITHUB_REPO`, `BLUEPRINT_GITHUB_REPO_TEAM`, `BLUEPRINT_IAM`, `BLUEPRINT_LOGS_AND_METRICS`, `BLUEPRINT_NETWORKING`, `BLUEPRINT_SERVERLESS_COMPUTE`
 - `description` (String)
 - `excluded_context_question_series` (Set of String) series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories
 - `guidance` (String)
