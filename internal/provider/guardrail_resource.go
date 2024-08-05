@@ -193,6 +193,7 @@ func (r *GuardrailResource) Create(
 			State:       plan.State.ValueString(),
 			Content:     plan.Content.ValueString(),
 		},
+		IsTerraformManaged: true,
 	}
 
 	guardrail, _, err := r.service.CreateGuardrail(ctx, newGuardrail)
