@@ -19,6 +19,7 @@ type Guardrail struct {
 
 type NewGuardrail struct {
 	CommonGuardrailFields
+	IsTerraformManaged bool `json:"is_terraform_managed"`
 }
 
 type UpdatedGuardrail struct {
