@@ -158,6 +158,7 @@ func (p *ResourcelyProvider) DataSources(ctx context.Context) []func() datasourc
 		NewBlueprintDataSource,
 		NewContextQuestionDataSource,
 		NewGuardrailDataSource,
+		NewGlobalValueDataSource,
 	}
 }
 
