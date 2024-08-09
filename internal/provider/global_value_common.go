@@ -6,6 +6,7 @@ import (
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -25,10 +26,10 @@ type GlobalValueResourceModel struct {
 }
 
 type GlobalValueOptionModel struct {
-	Key         types.String `tfsdk:"key"`
-	Label       types.String `tfsdk:"label"`
-	Description types.String `tfsdk:"description"`
-	Value       types.String `tfsdk:"value"`
+	Key         types.String         `tfsdk:"key"`
+	Label       types.String         `tfsdk:"label"`
+	Description types.String         `tfsdk:"description"`
+	Value       jsontypes.Normalized `tfsdk:"value"`
 }
 
 func FlattenGlobalValue(global_value *client.GlobalValue, data *GlobalValueResourceModel) diag.Diagnostics {
@@ -68,7 +69,7 @@ func FlattenGlobalValueOption(option client.GlobalValueOption, data *GlobalValue
 			"Could not JSON encode the value for global value option "+option.Key+": "+err.Error(),
 		)
 	}
-	data.Value = types.StringValue(string(value))
+	data.Value = jsontypes.NewNormalizedValue(string(value))
 
 	return diags
 }

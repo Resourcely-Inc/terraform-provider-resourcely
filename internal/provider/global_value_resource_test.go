@@ -211,7 +211,7 @@ resource "resourcely_global_value" "error_no_options" {
 
 func TestAccGlobalValueResource_errorInvalidJson(t *testing.T) {
 	expectedErrors := []string{
-		"Attribute options[0].value string must be valid JSON",
+		"Invalid JSON String Value",
 	}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

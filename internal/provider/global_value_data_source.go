@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -80,6 +81,7 @@ func (d *GlobalValueDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 							Computed:            true,
 						},
 						"value": schema.StringAttribute{
+							CustomType:          jsontypes.NormalizedType{},
 							MarkdownDescription: "A JSON encoding of the option's value. This value must match the declared type of the global value.\n\nExample: `value = jsonencode(\"a\")`\n\nExample: `value = jsonencode([\"a\", \"b\"])`",
 							Computed:            true,
 						},

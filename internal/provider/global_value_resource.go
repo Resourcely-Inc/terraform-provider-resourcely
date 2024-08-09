@@ -2,14 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
 
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
-	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/provider/util/jsonplanmodifier"
-	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/provider/util/jsonvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -127,14 +125,9 @@ func (r *GlobalValueResource) Schema(
 							Optional:            true,
 						},
 						"value": schema.StringAttribute{
+							CustomType:          jsontypes.NormalizedType{},
 							MarkdownDescription: "A JSON encoding of the option's value. This value must match the declared type of the global value.\n\nExample: `value = jsonencode(\"a\")`\n\nExample: `value = jsonencode([\"a\", \"b\"])`",
 							Required:            true,
-							Validators: []validator.String{
-								jsonvalidator.StringIsJSON(),
-							},
-							PlanModifiers: []planmodifier.String{
-								jsonplanmodifier.SuppressEquivalentJsonDiffs(),
-							},
 						},
 					},
 				},
@@ -334,12 +327,7 @@ func (r *GlobalValueResource) buildOption(ctx context.Context, plan GlobalValueO
 	option.Label = plan.Label.ValueString()
 	option.Description = plan.Description.ValueString()
 
-	if err := json.Unmarshal([]byte(plan.Value.ValueString()), &option.Value); err != nil {
-		diags.AddError(
-			"Error parsing global value option",
-			"Could not parse the global value option as JSON "+err.Error(),
-		)
-	}
+	diags.Append(plan.Value.Unmarshal(&option.Value)...)
 
 	return diags
 }
