@@ -244,6 +244,41 @@ resource "resourcely_global_value" "error_invalid_json" {
 }
 `
 
+func TestAccGlobalValueResource_errorNullJson(t *testing.T) {
+	expectedErrors := []string{
+		"Invalid JSON String Value",
+	}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ErrorCheck:               ErrorCheckExpectedErrorMessagesContaining(t, expectedErrors...),
+		Steps: []resource.TestStep{
+			// Create and Read testing
+			{
+				Config: testAccGlobalValueResourceConfig_errorInvalidJson,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckNoResourceAttr("resourcely_global_value.error_invalid_json", "options"),
+				),
+			},
+		},
+	})
+}
+
+const testAccGlobalValueResourceConfig_errorNullJson = `
+resource "resourcely_global_value" "error_invalid_json" {
+  key     = "error_invalid_json"
+  name    = "Error Invalid JSON"
+  type    = "PRESET_VALUE_TEXT"
+  options = [
+    {
+      key   = "option_0"
+      label = "Option 0"
+      value = null
+    }
+  ]
+}
+`
+
 func ErrorCheckExpectedErrorMessagesContaining(t *testing.T, messages ...string) resource.ErrorCheckFunc {
 	return func(err error) error {
 		if err == nil {
