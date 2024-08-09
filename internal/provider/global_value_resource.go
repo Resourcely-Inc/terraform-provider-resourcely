@@ -8,6 +8,8 @@ import (
 	"regexp"
 
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
+	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/provider/util/jsonplanmodifier"
+	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/provider/util/jsonvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -128,10 +130,10 @@ func (r *GlobalValueResource) Schema(
 							MarkdownDescription: "A JSON encoding of the option's value. This value must match the declared type of the global value.\n\nExample: `value = jsonencode(\"a\")`\n\nExample: `value = jsonencode([\"a\", \"b\"])`",
 							Required:            true,
 							Validators: []validator.String{
-								StringIsJSON(),
+								jsonvalidator.StringIsJSON(),
 							},
 							PlanModifiers: []planmodifier.String{
-								SuppressEquivalentJsonDiffs(),
+								jsonplanmodifier.SuppressEquivalentJsonDiffs(),
 							},
 						},
 					},
