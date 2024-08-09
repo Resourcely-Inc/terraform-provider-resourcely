@@ -147,8 +147,9 @@ func (p *ResourcelyProvider) Configure(ctx context.Context, req provider.Configu
 func (p *ResourcelyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewBlueprintResource,
-		NewContextQuestionResource,
+		NewGlobalValueResource,
 		NewGuardrailResource,
+		NewContextQuestionResource,
 	}
 }
 
@@ -157,6 +158,7 @@ func (p *ResourcelyProvider) DataSources(ctx context.Context) []func() datasourc
 		NewBlueprintDataSource,
 		NewContextQuestionDataSource,
 		NewGuardrailDataSource,
+		NewGlobalValueDataSource,
 	}
 }
 
