@@ -1,6 +1,8 @@
 module github.com/Resourcely-Inc/terraform-provider-resourcely
 
-go 1.20
+go 1.22.0
+
+toolchain go1.22.8
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
