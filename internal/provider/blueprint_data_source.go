@@ -78,6 +78,11 @@ func (d *BlueprintDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:            true,
 				MarkdownDescription: "",
 			},
+			"is_published": schema.BoolAttribute{
+				Computed:            true,
+				Optional:            true,
+				MarkdownDescription: "A published blueprint is available for use by developers to create resources through the Resourcely portal.",
+			},
 			"excluded_context_question_series": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
