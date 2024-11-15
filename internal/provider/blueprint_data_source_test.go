@@ -25,6 +25,7 @@ func TestAccBlueprintDataSource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.resourcely_blueprint.by_series_id", "labels.0", "marketing"),
 					resource.TestCheckResourceAttr("data.resourcely_blueprint.by_series_id", "guidance", "How to use this "),
 					resource.TestCheckResourceAttr("data.resourcely_blueprint.by_series_id", "excluded_context_question_series.#", "0"),
+					resource.TestCheckResourceAttr("data.resourcely_blueprint.by_series_id", "is_published", "true"),
 					resource.TestCheckResourceAttr("data.resourcely_blueprint.by_series_id", "content",
 						`resource "aws_s3_bucket" "{{ resource_name }}" {
   bucket = "{{ bucket }}"
@@ -49,6 +50,8 @@ resource "resourcely_blueprint" "basic" {
                 bucket = "{{ bucket }}"
               }
             EOT
+
+  is_published = true
 }
 
 data "resourcely_blueprint" "by_series_id" {
