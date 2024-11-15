@@ -17,6 +17,10 @@ import (
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 )
 
+const (
+	DEFAULT_HOST = "https://api.resourcely.io"
+)
+
 // Ensure ResourcelyProvider satisfies various provider interfaces.
 var (
 	_ provider.Provider = &ResourcelyProvider{}
@@ -89,6 +93,10 @@ func (p *ResourcelyProvider) Configure(ctx context.Context, req provider.Configu
 
 	if !config.AllowedTenants.IsNull() {
 		config.AllowedTenants.ElementsAs(ctx, &allowedTenants, false)
+	}
+
+	if host == "" {
+		host = DEFAULT_HOST
 	}
 
 	ctx = tflog.SetField(ctx, "resourcely_host", host)
