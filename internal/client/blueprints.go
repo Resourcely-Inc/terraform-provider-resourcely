@@ -15,18 +15,25 @@ type Blueprint struct {
 	Version  int64  `json:"version"`
 	Scope    string `json:"scope"`
 	CommonBlueprintFields
-	Provider string `json:"provider"`
+	Provider    string `json:"provider"`
+	IsPublished bool   `json:"is_published"`
 }
 
 type NewBlueprint struct {
 	CommonBlueprintFields
 	Provider           string `json:"provider"`
 	IsTerraformManaged bool   `json:"is_terraform_managed"`
+	IsPublished        bool   `json:"is_published"`
 }
 
 type UpdatedBlueprint struct {
 	SeriesId string `json:"-"`
 	CommonBlueprintFields
+}
+
+type PatchedBlueprint struct {
+	SeriesId    string `json:"-"`
+	IsPublished bool   `json:"is_published"`
 }
 
 type CommonBlueprintFields struct {
@@ -60,6 +67,15 @@ func (s *BlueprintsService) CreateBlueprint(ctx context.Context, newBlueprint *N
 func (s *BlueprintsService) UpdateBlueprint(ctx context.Context, updatedBlueprint *UpdatedBlueprint) (*Blueprint, *http.Response, error) {
 	path := fmt.Sprintf("%s/blueprints/series/%s", s.Client.BasePath, updatedBlueprint.SeriesId)
 	body, resp, err := s.Client.Put(ctx, path, updatedBlueprint, new(Blueprint))
+	if err != nil {
+		return nil, resp, err
+	}
+	return body.(*Blueprint), resp, nil
+}
+
+func (s *BlueprintsService) PatchBlueprint(ctx context.Context, patchedBlueprint *PatchedBlueprint) (*Blueprint, *http.Response, error) {
+	path := fmt.Sprintf("%s/blueprints/series/%s", s.Client.BasePath, patchedBlueprint.SeriesId)
+	body, resp, err := s.Client.Patch(ctx, path, patchedBlueprint, new(Blueprint))
 	if err != nil {
 		return nil, resp, err
 	}
