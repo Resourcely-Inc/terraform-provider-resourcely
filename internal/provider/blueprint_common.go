@@ -18,6 +18,7 @@ type BlueprintResourceModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Provider    types.String `tfsdk:"cloud_provider"`
+	IsPublished types.Bool   `tfsdk:"is_published"`
 
 	Content                       types.String `tfsdk:"content"`
 	Categories                    types.Set    `tfsdk:"categories"`
@@ -37,6 +38,7 @@ func FlattenBlueprint(blueprint *client.Blueprint) BlueprintResourceModel {
 	data.Name = types.StringValue(blueprint.Name)
 	data.Description = types.StringValue(blueprint.Description)
 	data.Provider = types.StringValue(blueprint.Provider)
+	data.IsPublished = types.BoolValue(blueprint.IsPublished)
 
 	data.Content = types.StringValue(blueprint.Content)
 	data.Guidance = types.StringValue(blueprint.Guidance)

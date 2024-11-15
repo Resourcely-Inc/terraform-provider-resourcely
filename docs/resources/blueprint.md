@@ -27,6 +27,9 @@ A Resourcely Blueprint
 - `description` (String)
 - `excluded_context_question_series` (Set of String) series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories
 - `guidance` (String)
+- `is_published` (Boolean) A published blueprint is available for use by developers to create resources through the Resourcely portal.
+
+If left unset, the blueprint will start as unpublished, and you may safely change this property in the Resourcely portal.
 - `labels` (Set of String)
 - `scope` (String)
 

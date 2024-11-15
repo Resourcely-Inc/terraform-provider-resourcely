@@ -96,6 +96,15 @@ func (c *Client) Put(ctx context.Context, path string, fields interface{}, respB
 	return c.MakeRequest(ctx, req, respBody)
 }
 
+// patch makes patch requests to the given path with the given fields and stores the response in the given body object.
+func (c *Client) Patch(ctx context.Context, path string, fields interface{}, respBody interface{}) (interface{}, *http.Response, error) {
+	req, err := c.NewRequest("PATCH", path, fields)
+	if err != nil {
+		return nil, nil, err
+	}
+	return c.MakeRequest(ctx, req, respBody)
+}
+
 // delete makes delete requests to the given path.
 func (c *Client) Delete(ctx context.Context, path string) (*http.Response, error) {
 	req, err := c.NewRequest("DELETE", path, nil)

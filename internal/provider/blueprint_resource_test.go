@@ -27,11 +27,27 @@ func TestAccBlueprintResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "labels.0", "marketing"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "guidance", "How to use this blueprint"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "excluded_context_question_series.#", "0"),
+					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "is_published", "false"),
 					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "content",
 						`resource "aws_s3_bucket" "{{ resource_name }}" {
   bucket = "{{ bucket }}"
 }
 `),
+				),
+			},
+			// Change to explicitly published
+			{
+				Config: testAccBlueprintResourceConfig_basic_published("basic_test"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "is_published", "true"),
+				),
+			},
+			// Change name and stop manage publishing via Terraform. The published state should still be retained.
+			{
+				Config: testAccBlueprintResourceConfig_basic_published("basic_test_updated"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "name", "basic_test_updated"),
+					resource.TestCheckResourceAttr("resourcely_blueprint.basic", "is_published", "true"),
 				),
 			},
 			// ImportState testing
@@ -76,6 +92,25 @@ resource "resourcely_blueprint" "basic" {
   categories = ["BLUEPRINT_BLOB_STORAGE"]
   labels = ["marketing"]
   guidance = "How to use this blueprint"
+  content = <<-EOT
+              resource "aws_s3_bucket" "{{ resource_name }}" {
+                bucket = "{{ bucket }}"
+              }
+            EOT
+}
+`, name)
+}
+
+func testAccBlueprintResourceConfig_basic_published(name string) string {
+	return fmt.Sprintf(`
+resource "resourcely_blueprint" "basic" {
+  name = "%s"
+  description = "this is a basic test"
+  cloud_provider = "PROVIDER_AMAZON"
+  categories = ["BLUEPRINT_BLOB_STORAGE"]
+  labels = ["marketing"]
+  guidance = "How to use this blueprint"
+  is_published = true
   content = <<-EOT
               resource "aws_s3_bucket" "{{ resource_name }}" {
                 bucket = "{{ bucket }}"

@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -155,6 +156,14 @@ func (r *BlueprintResource) Schema(
 					),
 				},
 			},
+			"is_published": schema.BoolAttribute{
+				Computed:            true,
+				Optional:            true,
+				MarkdownDescription: "A published blueprint is available for use by developers to create resources through the Resourcely portal.\n\nIf left unset, the blueprint will start as unpublished, and you may safely change this property in the Resourcely portal.",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"excluded_context_question_series": schema.SetAttribute{
 				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
 				ElementType:         basetypes.StringType{},
@@ -210,6 +219,7 @@ func (r *BlueprintResource) Create(
 		CommonBlueprintFields: r.buildCommonFields(ctx, plan),
 		Provider:              plan.Provider.ValueString(),
 		IsTerraformManaged:    true,
+		IsPublished:           plan.IsPublished.ValueBool(), // defaults to false if not explicitly set
 	}
 
 	blueprint, _, err := r.service.CreateBlueprint(ctx, newBlueprint)
@@ -279,19 +289,45 @@ func (r *BlueprintResource) Update(
 		return
 	}
 
+	// Compute which update methods needs to be called.
+	//
+	// Some fields are changed via update (PUT) and some are changed
+	// via patch (PATCH).
+	var blueprint *client.Blueprint
+	var err error
+	needsUpdate, needsPatch := r.computeUpdateActions(ctx, state, plan)
+
 	// Update the resource
-	updatedBlueprint := &client.UpdatedBlueprint{
-		SeriesId:              state.SeriesId.ValueString(),
-		CommonBlueprintFields: r.buildCommonFields(ctx, plan),
+	if needsUpdate {
+		updatedBlueprint := &client.UpdatedBlueprint{
+			SeriesId:              state.SeriesId.ValueString(),
+			CommonBlueprintFields: r.buildCommonFields(ctx, plan),
+		}
+
+		blueprint, _, err = r.service.UpdateBlueprint(ctx, updatedBlueprint)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error updating blueprint",
+				"Could not put blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
+			)
+			return
+		}
 	}
 
-	blueprint, _, err := r.service.UpdateBlueprint(ctx, updatedBlueprint)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error updating blueprint",
-			"Could not update blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
-		)
-		return
+	// Patch the resource
+	if needsPatch {
+		patchedBlueprint := &client.PatchedBlueprint{
+			SeriesId:    state.SeriesId.ValueString(),
+			IsPublished: plan.IsPublished.ValueBool(),
+		}
+		blueprint, _, err = r.service.PatchBlueprint(ctx, patchedBlueprint)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error updating blueprint",
+				"Could not patch blueprint series id "+state.SeriesId.ValueString()+": "+err.Error(),
+			)
+			return
+		}
 	}
 
 	// Set the resource state
@@ -327,6 +363,62 @@ func (r *BlueprintResource) ImportState(
 	resp *resource.ImportStateResponse,
 ) {
 	resource.ImportStatePassthroughID(ctx, path.Root("series_id"), req, resp)
+}
+
+// Most blueprint fields are updated via an Update (Put) API call, but
+// a IsPublished is updated via a Patch API call. This function
+// examines the changed properties to determine which are needed.
+func (r *BlueprintResource) computeUpdateActions(ctx context.Context, state BlueprintResourceModel, plan BlueprintResourceModel) (needsUpdate, needsPatch bool) {
+	needsUpdate = false
+	needsPatch = false
+
+	// Determine if the Patch fields have changed
+	isPublishedKnown := !plan.IsPublished.IsNull() && !plan.IsPublished.IsUnknown()
+	isPublishedChanged := !state.IsPublished.Equal(plan.IsPublished)
+	if isPublishedKnown && isPublishedChanged {
+		needsPatch = true
+	}
+
+	// Determine if the Update fields have changed
+
+	// If patch is not needed, we know an update is needed. Terraform
+	// only calls us if there was some change. And it was't to a patch
+	// field...
+	if !needsPatch {
+		needsUpdate = true
+		return
+	}
+
+	// Otherwise, check all update fields
+	if !plan.Categories.Equal(state.Categories) {
+		needsUpdate = true
+	}
+
+	if !plan.Content.Equal(state.Content) {
+		needsUpdate = true
+	}
+
+	if !plan.Description.Equal(state.Description) {
+		needsUpdate = true
+	}
+
+	if !plan.ExcludedContextQuestionSeries.Equal(state.ExcludedContextQuestionSeries) {
+		needsUpdate = true
+	}
+
+	if !plan.Guidance.Equal(state.Guidance) {
+		needsUpdate = true
+	}
+
+	if !plan.Labels.Equal(state.Labels) {
+		needsUpdate = true
+	}
+
+	if !plan.Name.Equal(state.Name) {
+		needsUpdate = true
+	}
+
+	return
 }
 
 func (r *BlueprintResource) buildCommonFields(
