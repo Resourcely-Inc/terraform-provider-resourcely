@@ -19,6 +19,10 @@ A resourcely blueprint
 
 - `series_id` (String) UUID for the blueprint
 
+### Optional
+
+- `is_published` (Boolean) A published blueprint is available for use by developers to create resources through the Resourcely portal.
+
 ### Read-Only
 
 - `categories` (Set of String)
