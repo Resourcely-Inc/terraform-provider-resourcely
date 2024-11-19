@@ -6,6 +6,7 @@ import (
 
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
@@ -72,6 +73,15 @@ func (d *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				MarkdownDescription: "",
 				Computed:            true,
 			},
+			"guardrail_template_series_id": schema.StringAttribute{
+				MarkdownDescription: "The series id of the guardrail template used to render the policies",
+				Computed:            true,
+			},
+			"guardrail_template_inputs": schema.StringAttribute{
+				CustomType:          jsontypes.NormalizedType{},
+				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs.\n\nExample: `guardrail_template_inputs = jsonencode({inputOne = \"value one\"})`",
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -116,7 +126,7 @@ func (d *GuardrailDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Overwrite state with refreshed value
-	state := FlattenGuardrail(guardrail)
-
+	var state GuardrailResourceModel
+	resp.Diagnostics.Append(FlattenGuardrail(guardrail, &state)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
