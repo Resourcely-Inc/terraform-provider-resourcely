@@ -19,12 +19,16 @@ A resourcely guardrail
 
 - `category` (String) The category to assign to the guardrail. Can be one of `GUARDRAIL_ACCESS_CONTROL`, `GUARDRAIL_BEST_PRACTICES`, `GUARDRAIL_CHANGE_MANAGEMENT`, `GUARDRAIL_COST_EFFICIENCY`, `GUARDRAIL_ENCRYPTION`, `GUARDRAIL_GLOBALIZATION`, `GUARDRAIL_IAM`, `GUARDRAIL_LOGGING`, `GUARDRAIL_MODULE_INPUTS`, `GUARDRAIL_PRIVACY_COMPLIANCE`, `GUARDRAIL_RELIABILITY`, `GUARDRAIL_STORAGE_AND_SCALE`
 - `cloud_provider` (String) The cloud provider that this guardrail targets. Can be one of `PROVIDER_AMAZON`, `PROVIDER_AZURE`, `PROVIDER_CONDUCTORONE`, `PROVIDER_DATABRICKS`, `PROVIDER_DATADOG`, `PROVIDER_GITHUB`, `PROVIDER_GITLAB`, `PROVIDER_GOOGLE`, `PROVIDER_HYPERV`, `PROVIDER_IBM`,`PROVIDER_JUMPCLOUD`, `PROVIDER_KUBERNETES`, `PROVIDER_OKTA`, `PROVIDER_ORACLE`, `PROVIDER_RESOURCELY`, `PROVIDER_SNOWFLAKE`, `PROVIDER_SPACELIFT`, `PROVIDER_VMWARE`, `PROVIDER_OTHER`
-- `content` (String) The content of the guardrail, written in Resourcely's Really language
 - `name` (String) Name to associate with the guardrail
 
 ### Optional
 
+- `content` (String) The content of the guardrail, written in Resourcely's Really language
 - `description` (String) Description of what the guardrail applies to
+- `guardrail_template_inputs` (String) A JSON encoding of values for the guardrail template inputs.
+
+Example: `guardrail_template_inputs = jsonencode({inputOne = "value one"})`
+- `guardrail_template_series_id` (String) The series id of the guardrail template used to render the policies
 - `scope` (String)
 - `state` (String) The state to set the guardrail to. Can be one of `GUARDRAIL_STATE_INACTIVE`, `GUARDRAIL_STATE_EVALUATE_ONLY`, `GUARDRAIL_STATE_ACTIVE`. If not provided state is set to `GUARDRAIL_STATE_ACTIVE`
 
