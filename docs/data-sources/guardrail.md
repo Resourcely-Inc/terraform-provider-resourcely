@@ -25,6 +25,10 @@ A resourcely guardrail
 - `cloud_provider` (String)
 - `content` (String)
 - `description` (String)
+- `guardrail_template_inputs` (String) A JSON encoding of values for the guardrail template inputs.
+
+Example: `guardrail_template_inputs = jsonencode({inputOne = "value one"})`
+- `guardrail_template_series_id` (String) The series id of the guardrail template used to render the policies
 - `id` (String) UUID for this version.
 - `name` (String)
 - `scope` (String)

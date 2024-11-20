@@ -7,6 +7,8 @@ import (
 
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -144,7 +146,19 @@ func (r *GuardrailResource) Schema(
 			},
 			"content": schema.StringAttribute{
 				MarkdownDescription: "The content of the guardrail, written in Resourcely's Really language",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
+			},
+			"guardrail_template_series_id": schema.StringAttribute{
+				MarkdownDescription: "The series id of the guardrail template used to render the policies",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString(""),
+			},
+			"guardrail_template_inputs": schema.StringAttribute{
+				CustomType:          jsontypes.NormalizedType{},
+				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs.\n\nExample: `guardrail_template_inputs = jsonencode({inputOne = \"value one\"})`",
+				Optional:            true,
 			},
 		},
 	}
@@ -177,6 +191,23 @@ func (r *GuardrailResource) Configure(
 	r.service = client.Guardrails
 }
 
+func (r *GuardrailResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{
+		resourcevalidator.ExactlyOneOf(
+			path.MatchRoot("content"),
+			path.MatchRoot("guardrail_template_series_id"),
+		),
+		resourcevalidator.RequiredTogether(
+			path.MatchRoot("guardrail_template_series_id"),
+			path.MatchRoot("guardrail_template_inputs"),
+		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("content"),
+			path.MatchRoot("guardrail_template_inputs"),
+		),
+	}
+}
+
 func (r *GuardrailResource) Create(
 	ctx context.Context,
 	req resource.CreateRequest,
@@ -199,7 +230,11 @@ func (r *GuardrailResource) Create(
 			State:       plan.State.ValueString(),
 			Content:     plan.Content.ValueString(),
 		},
-		IsTerraformManaged: true,
+		GuardrailTemplateSeriesId: plan.GuardrailTemplateSeriesId.ValueString(),
+		IsTerraformManaged:        true,
+	}
+	if !plan.GuardrailTemplateInputs.IsNull() {
+		resp.Diagnostics.Append(plan.GuardrailTemplateInputs.Unmarshal(&newGuardrail.GuardrailTemplateInputs)...)
 	}
 
 	guardrail, _, err := r.service.CreateGuardrail(ctx, newGuardrail)
@@ -212,8 +247,8 @@ func (r *GuardrailResource) Create(
 	}
 
 	// Set the resource state
-	state := FlattenGuardrail(guardrail)
-	resp.Diagnostics.Append(NormalizeGuardrail(&state, &plan)...)
+	var state GuardrailResourceModel
+	resp.Diagnostics.Append(FlattenGuardrail(guardrail, &state)...)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -224,8 +259,8 @@ func (r *GuardrailResource) Read(
 	resp *resource.ReadResponse,
 ) {
 	// Get the current state
-	var previousState GuardrailResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &previousState)...)
+	var state GuardrailResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -233,12 +268,12 @@ func (r *GuardrailResource) Read(
 	// Refresh value from the remote API
 	guardrail, httpResp, err := r.service.GetGuardrailBySeriesId(
 		ctx,
-		previousState.SeriesId.ValueString(),
+		state.SeriesId.ValueString(),
 	)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning(
-				"Guardrail "+previousState.SeriesId.ValueString()+" was not found in Resourcely",
+				"Guardrail "+state.SeriesId.ValueString()+" was not found in Resourcely",
 				"The guardrail may have been deleted outside of Terraform",
 			)
 			resp.State.RemoveResource(ctx)
@@ -246,16 +281,14 @@ func (r *GuardrailResource) Read(
 		} else {
 			resp.Diagnostics.AddError(
 				"Error reading guardrail",
-				"Could not read guardrail series id "+previousState.SeriesId.ValueString()+": "+err.Error(),
+				"Could not read guardrail series id "+state.SeriesId.ValueString()+": "+err.Error(),
 			)
 			return
 		}
 	}
 
 	// Overwrite state with refreshed value
-	state := FlattenGuardrail(guardrail)
-	resp.Diagnostics.Append(NormalizeGuardrail(&state, &previousState)...)
-
+	resp.Diagnostics.Append(FlattenGuardrail(guardrail, &state)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -284,6 +317,10 @@ func (r *GuardrailResource) Update(
 			State:       plan.State.ValueString(),
 			Content:     plan.Content.ValueString(),
 		},
+		GuardrailTemplateSeriesId: plan.GuardrailTemplateSeriesId.ValueString(),
+	}
+	if !plan.GuardrailTemplateInputs.IsNull() {
+		resp.Diagnostics.Append(plan.GuardrailTemplateInputs.Unmarshal(&updatedGuardrail.GuardrailTemplateInputs)...)
 	}
 
 	guardrail, _, err := r.service.UpdateGuardrail(ctx, updatedGuardrail)
@@ -296,9 +333,7 @@ func (r *GuardrailResource) Update(
 	}
 
 	// Set the resource state
-	state = FlattenGuardrail(guardrail)
-	resp.Diagnostics.Append(NormalizeGuardrail(&state, &plan)...)
-
+	resp.Diagnostics.Append(FlattenGuardrail(guardrail, &state)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 

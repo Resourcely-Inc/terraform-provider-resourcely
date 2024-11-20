@@ -14,17 +14,31 @@ type Guardrail struct {
 	SeriesId string `json:"series_id"`
 	Version  int64  `json:"version"`
 	Scope    string `json:"scope"`
+
 	CommonGuardrailFields
+
+	GuardrailTemplate struct {
+		SeriesId string `json:"series_id"`
+	} `json:"guardrail_template"`
+	GuardrailTemplateInputs interface{} `json:"guardrail_template_inputs"`
 }
 
 type NewGuardrail struct {
 	CommonGuardrailFields
+
+	GuardrailTemplateSeriesId string      `json:"guardrail_template_series_id"`
+	GuardrailTemplateInputs   interface{} `json:"guardrail_template_inputs"`
+
 	IsTerraformManaged bool `json:"is_terraform_managed"`
 }
 
 type UpdatedGuardrail struct {
 	SeriesId string `json:"-"`
+
 	CommonGuardrailFields
+
+	GuardrailTemplateSeriesId string      `json:"guardrail_template_series_id"`
+	GuardrailTemplateInputs   interface{} `json:"guardrail_template_inputs"`
 }
 
 type CommonGuardrailFields struct {

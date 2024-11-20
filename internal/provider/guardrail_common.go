@@ -1,8 +1,11 @@
 package provider
 
 import (
+	"encoding/json"
+
 	"github.com/Resourcely-Inc/terraform-provider-resourcely/internal/client"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -22,10 +25,13 @@ type GuardrailResourceModel struct {
 	State types.String `tfsdk:"state"`
 
 	Content types.String `tfsdk:"content"`
+
+	GuardrailTemplateSeriesId types.String         `tfsdk:"guardrail_template_series_id"`
+	GuardrailTemplateInputs   jsontypes.Normalized `tfsdk:"guardrail_template_inputs"`
 }
 
-func FlattenGuardrail(guardrail *client.Guardrail) GuardrailResourceModel {
-	var data GuardrailResourceModel
+func FlattenGuardrail(guardrail *client.Guardrail, data *GuardrailResourceModel) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	data.Id = types.StringValue(guardrail.Id)
 	data.SeriesId = types.StringValue(guardrail.SeriesId)
@@ -41,9 +47,17 @@ func FlattenGuardrail(guardrail *client.Guardrail) GuardrailResourceModel {
 
 	data.Content = types.StringValue(guardrail.Content)
 
-	return data
-}
+	data.GuardrailTemplateSeriesId = types.StringValue(guardrail.GuardrailTemplate.SeriesId)
+	if guardrail.GuardrailTemplateInputs != nil {
+		guardrailTemplateInputs, err := json.Marshal(guardrail.GuardrailTemplateInputs)
+		if err != nil {
+			diags.AddError(
+				"Failed to JSON encode the guardrail template inputs",
+				"Could not JSON encode the guardrail template inputs for guardrail "+guardrail.Id+": "+err.Error(),
+			)
+		}
+		data.GuardrailTemplateInputs = jsontypes.NewNormalizedValue(string(guardrailTemplateInputs))
+	}
 
-func NormalizeGuardrail(state *GuardrailResourceModel, prior *GuardrailResourceModel) diag.Diagnostics {
-	return diag.Diagnostics{}
+	return diags
 }
