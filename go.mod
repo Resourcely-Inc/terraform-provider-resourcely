@@ -1,6 +1,7 @@
 module github.com/Resourcely-Inc/terraform-provider-resourcely
 
-go 1.22.0
+go 1.22.7
+
 toolchain go1.22.8
 
 require (
