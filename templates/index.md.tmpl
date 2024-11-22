@@ -1,0 +1,51 @@
+---
+page_title: "Provider: resourcely"
+description: |-
+  Manage Resourcely blueprints, guardrails, global values, and more through Terraform.
+---
+
+# {{ .ProviderShortName | upper }} Provider
+
+The Resourcely provider is used to manage Resourcely blueprint,
+guardrails, global values, and more through Terraform. The provider
+needs to be configured with the proper credentials before it can be
+used.
+
+## Example Usage
+
+Configure the Resourcely provider.
+
+{{tffile "examples/provider/provider.tf"}}
+
+Create a guardrail.
+
+{{tffile "examples/resources/resourcely_guardrail/resource.tf"}}
+
+Create a blueprint.
+
+{{tffile "examples/resources/resourcely_blueprint/resource.tf"}}
+
+## Authentication and Configuration
+
+The provider requires a Resourcely API token to authenticate. It
+expects the token to be provided through the `RESOURCELY_AUTH_TOKEN`
+environment variable. Configure your Terraform runner to supply this
+variable.
+
+You can generate the token from the [Resourcely Settings
+page](https://portal.resourcely.io/settings/generate-api-token). Choose
+the "Terraform Provider" role.
+
+You can also supply the token directly in the provider block. Ensure
+that token is securely stored in a secret management system. Do not
+hardcode it in the provider block.
+
+{{tffile "examples/provider/provider_with_auth_token.tf"}}
+
+If your organization uses multiple tenants within Resourcely, you can
+configure the `allowed_tenants` in the provider block to prevent
+accidently mixing API keys between tenants.
+
+{{tffile "examples/provider/provider_with_allowed_tenants.tf"}}
+
+{{ .SchemaMarkdown | trimspace }}
