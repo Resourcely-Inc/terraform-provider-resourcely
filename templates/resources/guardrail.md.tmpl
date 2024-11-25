@@ -1,0 +1,31 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines " " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+Create a guardrail using the [Really policy langauge](https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails).
+
+{{ tffile .ExampleFile }}
+
+This resource also supports creating a guardrail from a Resourcely
+Guardrail Template. Instead of specifying the `content`, specify the
+`guardrail_template_series_id` and `guardrail_template_inputs`
+instead.
+
+{{ tffile "examples/resources/resourcely_guardrail/resource_with_template.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+A guardrail can be imported using its series_id.
+
+{{codefile "shell" .ImportFile }}
