@@ -46,7 +46,7 @@ func (r *ContextQuestionResource) Metadata(_ context.Context, req resource.Metad
 
 func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A [context question](https://docs.resourcely.io/concepts/other-features-and-settings/global-context-and-values) is used to gather data from developers before provisioning a resource. They are designed to gather and store insightful data related to the resource.\n\nSoime examples include:\n\n-What type of data will be stored in this infrastructure?\n- What application is this infrastructure associated with?\n- What is the email address the person/team responsible for this infrastructure?\n\nThree types of context questions are supported:\n\n- Text\n- Single Choice\n- Multiple Choice\n",
+		MarkdownDescription: "A [context question](https://docs.resourcely.io/concepts/other-features-and-settings/global-context-and-values) is used to gather data from developers before provisioning a resource. They are designed to gather and store insightful data related to the resource.\n\nSome examples include:\n\n- What type of data will be stored in this infrastructure?\n- What application is this infrastructure associated with?\n- What is the email address the person/team responsible for this infrastructure?\n\nThree types of context questions are supported:\n\n- Text\n- Single Choice\n- Multiple Choice\n",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "UUID for the current version of the context question.",
