@@ -1,11 +1,6 @@
 ---
 page_title: "resourcely_guardrail Resource - terraform-provider-resourcely"
 subcategory: ""
-description: |-
- A guardrail governs how cloud resources can be created and altered, preventing infrastructure misconfiguration. Before infrastructure is provisioned, Resourcely examines the changes being made and prevents a merge if any guardrail requirements are violated.
- Some examples of guardrails include:
- Require approval for making a public S3 bucketRestrict the allowed compute instance types or images
- Guardrails are specified using the Really policy language https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails.
 ---
 
 # resourcely_guardrail (Resource)

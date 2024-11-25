@@ -1,12 +1,6 @@
 ---
 page_title: "resourcely_context_question Data Source - terraform-provider-resourcely"
 subcategory: ""
-description: |-
- A context question https://docs.resourcely.io/concepts/other-features-and-settings/global-context-and-values is used to gather data from developers before provisioning a resource. They are designed to gather and store insightful data related to the resource.
- Some examples include:
- What type of data will be stored in this infrastructure?What application is this infrastructure associated with?What is the email address the person/team responsible for this infrastructure?
- Three types of context questions are supported:
- TextSingle ChoiceMultiple Choice
 ---
 
 # resourcely_context_question (Data Source)

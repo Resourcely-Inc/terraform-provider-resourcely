@@ -1,11 +1,6 @@
 ---
 page_title: "resourcely_blueprint Data Source - terraform-provider-resourcely"
 subcategory: ""
-description: |-
- A blueprint is a configuration template used to provision cloud infrastructure resources. Blueprints allow you to:
- Define which options are available for properties of your resource(s).Apply gaurdrails to your resource(s) to prevent misconfiguration.Define what information to collect from your developers before provisioning the resource.
- Once a blueprint is configured and published, it becomes available for use in your Resourcely service catalog.
- The template is specified using Resourcely's TFT templating language. See the Authoring Your Own Blueprints https://docs.resourcely.io/build/setting-up-blueprints/authoring-your-own-blueprints docs for details about TFT. The Resourcely Foundry https://portal.resourcely.io/foundry?mode=blueprint provides an IDE to assist with authoring the template.
 ---
 
 # resourcely_blueprint (Data Source)

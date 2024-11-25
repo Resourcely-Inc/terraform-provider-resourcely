@@ -1,8 +1,6 @@
 ---
 page_title: "resourcely_global_value Data Source - terraform-provider-resourcely"
 subcategory: ""
-description: |-
- A global value https://docs.resourcely.io/concepts/other-features-and-settings/global-values allows admins to define custom drop-downs for customizing Terraform infrastructure resource properties before they are provisioned.  They are useful for providing access to lists of relatively static values like VPC IDs, allowed regions, department or team names, etc.
 ---
 
 # resourcely_global_value (Data Source)

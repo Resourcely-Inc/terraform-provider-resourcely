@@ -1,7 +1,5 @@
 ---
 page_title: "Provider: resourcely"
-description: |-
-  Manage Resourcely blueprints, guardrails, global values, and more through Terraform.
 ---
 
 # RESOURCELY Provider

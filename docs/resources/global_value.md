@@ -1,9 +1,6 @@
 ---
 page_title: "resourcely_global_value Resource - terraform-provider-resourcely"
 subcategory: ""
-description: |-
- A global value https://docs.resourcely.io/concepts/other-features-and-settings/global-values allows admins to define custom drop-downs for customizing Terraform infrastructure resource properties before they are provisioned.  They are useful for providing access to lists of relatively static values like VPC IDs, allowed regions, department or team names, etc.
- This global value API does not support deletion. Deleting the Terraform resource will remove the resource from the Terraform state file, but will not actually delete the global value entity. Set is_deprecated = true to tell Resourcely that this global value should no longer be used by new blueprints or guardrails.
 ---
 
 # resourcely_global_value (Resource)
