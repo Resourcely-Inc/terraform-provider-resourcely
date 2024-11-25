@@ -1,0 +1,33 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines " " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+Create a simple,  multi-select context question.
+
+{{ tffile .ExampleFile }}
+
+
+Context questions with "text" type can restrict the allowed answer formats. For example, create a context question that asks for an email address.
+
+{{ tffile "examples/resources/resourcely_context_question/resource_with_email_format.tf" }}
+
+Or, create a context question that asks for a project code comprising 6 hex digits.
+
+{{ tffile "examples/resources/resourcely_context_question/resource_with_regex_format.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+A blueprint can be imported using its series_id.
+
+{{codefile "shell" .ImportFile }}
