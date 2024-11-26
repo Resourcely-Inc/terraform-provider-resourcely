@@ -2,7 +2,7 @@
 page_title: "Provider: resourcely"
 ---
 
-# RESOURCELY Provider
+# Resourcely Provider
 
 The Resourcely provider is used to manage Resourcely blueprint,
 guardrails, global values, and more through Terraform. The provider
