@@ -51,7 +51,7 @@ func (p *ResourcelyProvider) Schema(ctx context.Context, req provider.SchemaRequ
 		Description: "Configure Resourcely resources",
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				MarkdownDescription: "URI for Resourcely API.",
+				MarkdownDescription: "URI for Resourcely API. Defaults to 'https://api.resourcely.io'.",
 				Optional:            true,
 			},
 			"auth_token": schema.StringAttribute{

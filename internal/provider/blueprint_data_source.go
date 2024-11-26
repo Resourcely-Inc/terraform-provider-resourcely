@@ -29,12 +29,11 @@ func (d *BlueprintDataSource) Metadata(_ context.Context, req datasource.Metadat
 
 func (d *BlueprintDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A resourcely blueprint",
+		MarkdownDescription: "A blueprint is a configuration template used to provision cloud infrastructure resources. Blueprints allow you to:\n\n- Define which options are available for properties of your resource(s).\n- Apply gaurdrails to your resource(s) to prevent misconfiguration.\n- Define what information to collect from your developers before provisioning the resource.\n\nOnce a blueprint is configured and published, it becomes available for use in your Resourcely service catalog.\n\nThe template is specified using Resourcely's TFT templating language. See the [Authoring Your Own Blueprints](https://docs.resourcely.io/build/setting-up-blueprints/authoring-your-own-blueprints) docs for details about TFT. The [Resourcely Foundry](https://portal.resourcely.io/foundry?mode=blueprint) provides an IDE to assist with authoring the template.",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "UUID for this version.",
+				MarkdownDescription: "UUID for the current version of the blueprint.",
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
@@ -42,51 +41,50 @@ func (d *BlueprintDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Required:            true,
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the blueprint",
+				MarkdownDescription: "Increment version number for the current version of the blueprint.",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
 				Computed: true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The name of the blueprint.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "A description of the blueprints's purpose or functionality.",
 				Computed:            true,
 			},
 			"cloud_provider": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The cloud provider that this blueprint targets.",
 				Computed:            true,
 			},
 			"content": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The templated Terraform configuration specified using Resourcely's TFT format.",
 				Computed:            true,
 			},
 			"guidance": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Guidance to help your users know when and how to use this blueprint.",
 				Computed:            true,
 			},
 			"categories": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
-				MarkdownDescription: "",
+				MarkdownDescription: "The category to assign to this blueprint.",
 			},
 			"labels": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
-				MarkdownDescription: "",
+				MarkdownDescription: "Additional keywords to help your users discover this blueprint.",
 			},
 			"is_published": schema.BoolAttribute{
 				Computed:            true,
-				Optional:            true,
 				MarkdownDescription: "A published blueprint is available for use by developers to create resources through the Resourcely portal.",
 			},
 			"excluded_context_question_series": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
-				MarkdownDescription: "series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
+				MarkdownDescription: "The series_ids for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
 			},
 		},
 	}

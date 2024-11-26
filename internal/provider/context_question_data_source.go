@@ -30,20 +30,18 @@ func (d *ContextQuestionDataSource) Metadata(_ context.Context, req datasource.M
 
 func (d *ContextQuestionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A resourcely ContextQuestion",
-
+		MarkdownDescription: "A [context question](https://docs.resourcely.io/concepts/other-features-and-settings/global-context-and-values) is used to gather data from developers before provisioning a resource. They are designed to gather and store insightful data related to the resource.\n\nSome examples include:\n\n- What type of data will be stored in this infrastructure?\n- What application is this infrastructure associated with?\n- What is the email address the person/team responsible for this infrastructure?\n\nThree types of context questions are supported:\n\n- Text\n- Single Choice\n- Multiple Choice\n",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "UUID for this version.",
+				MarkdownDescription: "UUID for the current version of this context question.",
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the global context",
+				MarkdownDescription: "UUID for the context question.",
 				Required:            true,
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the global context",
+				MarkdownDescription: "Incrementing version number of the context question.",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -51,49 +49,50 @@ func (d *ContextQuestionDataSource) Schema(_ context.Context, _ datasource.Schem
 				Computed:            true,
 			},
 			"label": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "A key used to reference the context question in blueprints and guardrails. Is unique within your Resourcley tenant.",
 				Computed:            true,
 			},
 			"prompt": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The question that Resourcely will ask your developers.",
 				Computed:            true,
 			},
 			"qtype": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The type of the question. Will be one of `QYTPE_TEXT`, `QYTPE_SINGLE_SELECT`, or `QTYPE_MULTI_SELECT`.",
 				Computed:            true,
 			},
 			"answer_format": schema.StringAttribute{
-				MarkdownDescription: "",
-				Computed:            true,
+				MarkdownDescription: "A format validation for acceptable answers to the context question. Applicable only when `qtype` is `QTYPE_TEXT` . Will be one of `ANSWER_TEXT`, `ANSWER_NUMBER`, `ANSWER_EMAIL`, or `ANSWER_REGEX`. If `ANSWER_REGEX`, the `regex_pattern` property will also be set.",
+
+				Computed: true,
 			},
 			"answer_choices": schema.SetNestedAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The answer choices from which the developer can select. Applicable only when `qtype` is `QTYPE_SINGLE_SELECT` or `QTYPE_MULTI_SELECT`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"label": schema.StringAttribute{
-							MarkdownDescription: "",
+							MarkdownDescription: "The value for the answer choice.",
 							Computed:            true,
 						},
 					},
 				},
 			},
 			"blueprint_categories": schema.SetAttribute{
+				MarkdownDescription: "The blueprint categories to which this context question applies. This question will be asked whenever a developer uses a blueprint in these categories.",
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
-				MarkdownDescription: "Resource categories the context question applies to",
 			},
 			"regex_pattern": schema.StringAttribute{
-				MarkdownDescription: "Regex validation for the acceptable answers to the context question",
+				MarkdownDescription: "A regex validation for the acceptable answers to the context question. Applicable only when both `qtype` is `QTYPE_TEXT` and `answer_format` is `ANSWER_REGEX`.",
 				Computed:            true,
 			},
 			"excluded_blueprint_series": schema.SetAttribute{
+				MarkdownDescription: "The series_ids of blueprints for which this question should not be asked, even if those blueprints belong to the context question's blueprint_categories.",
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
-				MarkdownDescription: "series_id for Blueprints exempt from this context question even though those blueprints belong to the context question's blueprint_categories",
 			},
 			"priority": schema.Int64Attribute{
-				MarkdownDescription: "Priority of this question, relative to others. 0=high, 1=medium, 2=low",
+				MarkdownDescription: "The priority of this question, relative to others. 0=high, 1=medium, 2=low",
 				Computed:            true,
 			},
 		},

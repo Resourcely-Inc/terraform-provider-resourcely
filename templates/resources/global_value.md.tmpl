@@ -1,0 +1,29 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+Create a global value containing all the departments within the company.
+
+{{ tffile .ExampleFile }}
+
+Create a global value listing the AMI attributes for three Linux
+distributions. Then create a blueprint that creates an instance,
+querying for the AMI using the attributes of the selected
+distribution.
+
+{{ tffile "examples/resources/resourcely_global_value/resource_with_object_values.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+A global value can be imported using its series_id.
+
+{{codefile "shell" .ImportFile }}

@@ -1,0 +1,1 @@
+terraform import resourcely_global_value.example 00000000-00000000-00000000-00000000

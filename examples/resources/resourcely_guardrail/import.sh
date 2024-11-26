@@ -1,0 +1,1 @@
+terraform import resourcely_guardrail.example 00000000-00000000-00000000-00000000

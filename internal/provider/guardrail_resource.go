@@ -48,23 +48,21 @@ func (r *GuardrailResource) Schema(
 	resp *resource.SchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A resourcely guardrail",
-
+		MarkdownDescription: "A guardrail governs how cloud resources can be created and altered, preventing infrastructure misconfiguration. Before infrastructure is provisioned, Resourcely examines the changes being made and prevents a merge if any guardrail requirements are violated.\n\nSome examples of guardrails include:\n\n- Require approval for making a public S3 bucket\n- Restrict the allowed compute instance types or images\n\nGuardrails are specified using the [Really policy language](https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "UUID for this version.",
+				MarkdownDescription: "UUID for the current version of the guardrail.",
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the guardrail",
+				MarkdownDescription: "UUID for the guardrail.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the guardrail",
+				MarkdownDescription: "Incrementing version number for the current version of the guardrail.",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -75,17 +73,17 @@ func (r *GuardrailResource) Schema(
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "Name to associate with the guardrail",
+				MarkdownDescription: "The name of the guardrail.",
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Description of what the guardrail applies to",
+				MarkdownDescription: "A description of the guardrail's purpose or policy.",
 				Default:             stringdefault.StaticString(""),
 				Computed:            true,
 				Optional:            true,
 			},
 			"cloud_provider": schema.StringAttribute{
-				MarkdownDescription: "The cloud provider that this guardrail targets. Can be one of `PROVIDER_AMAZON`, `PROVIDER_AZURE`, `PROVIDER_CONDUCTORONE`, `PROVIDER_DATABRICKS`, `PROVIDER_DATADOG`, `PROVIDER_GITHUB`, `PROVIDER_GITLAB`, `PROVIDER_GOOGLE`, `PROVIDER_HYPERV`, `PROVIDER_IBM`,`PROVIDER_JUMPCLOUD`, `PROVIDER_KUBERNETES`, `PROVIDER_OKTA`, `PROVIDER_ORACLE`, `PROVIDER_RESOURCELY`, `PROVIDER_SNOWFLAKE`, `PROVIDER_SPACELIFT`, `PROVIDER_VMWARE`, `PROVIDER_OTHER`",
+				MarkdownDescription: "The cloud provider that this guardrail targets. Can be one of `PROVIDER_AMAZON`, `PROVIDER_AZURE`, `PROVIDER_CONDUCTORONE`, `PROVIDER_DATABRICKS`, `PROVIDER_DATADOG`, `PROVIDER_GITHUB`, `PROVIDER_GITLAB`, `PROVIDER_GOOGLE`, `PROVIDER_HYPERV`, `PROVIDER_IBM`,`PROVIDER_JUMPCLOUD`, `PROVIDER_KUBERNETES`, `PROVIDER_OKTA`, `PROVIDER_ORACLE`, `PROVIDER_RESOURCELY`, `PROVIDER_SNOWFLAKE`, `PROVIDER_SPACELIFT`, `PROVIDER_VMWARE`, `PROVIDER_OTHER`.",
 				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
@@ -112,7 +110,7 @@ func (r *GuardrailResource) Schema(
 				},
 			},
 			"category": schema.StringAttribute{
-				MarkdownDescription: "The category to assign to the guardrail. Can be one of `GUARDRAIL_ACCESS_CONTROL`, `GUARDRAIL_BEST_PRACTICES`, `GUARDRAIL_CHANGE_MANAGEMENT`, `GUARDRAIL_COST_EFFICIENCY`, `GUARDRAIL_ENCRYPTION`, `GUARDRAIL_GLOBALIZATION`, `GUARDRAIL_IAM`, `GUARDRAIL_LOGGING`, `GUARDRAIL_MODULE_INPUTS`, `GUARDRAIL_PRIVACY_COMPLIANCE`, `GUARDRAIL_RELIABILITY`, `GUARDRAIL_STORAGE_AND_SCALE`",
+				MarkdownDescription: "The category to assign to this guardrail. Can be one of `GUARDRAIL_ACCESS_CONTROL`, `GUARDRAIL_BEST_PRACTICES`, `GUARDRAIL_CHANGE_MANAGEMENT`, `GUARDRAIL_COST_EFFICIENCY`, `GUARDRAIL_ENCRYPTION`, `GUARDRAIL_GLOBALIZATION`, `GUARDRAIL_IAM`, `GUARDRAIL_LOGGING`, `GUARDRAIL_MODULE_INPUTS`, `GUARDRAIL_PRIVACY_COMPLIANCE`, `GUARDRAIL_RELIABILITY`, `GUARDRAIL_STORAGE_AND_SCALE`.",
 				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
@@ -132,7 +130,7 @@ func (r *GuardrailResource) Schema(
 				},
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The state to set the guardrail to. Can be one of `GUARDRAIL_STATE_INACTIVE`, `GUARDRAIL_STATE_EVALUATE_ONLY`, `GUARDRAIL_STATE_ACTIVE`. If not provided state is set to `GUARDRAIL_STATE_ACTIVE`",
+				MarkdownDescription: "The [state](https://docs.resourcely.io/build/setting-up-guardrails/releasing-guardrails#guardrail-status) of the guardrail. Can be one of `GUARDRAIL_STATE_INACTIVE`, `GUARDRAIL_STATE_EVALUATE_ONLY`, `GUARDRAIL_STATE_ACTIVE`. If not provided state is set to `GUARDRAIL_STATE_ACTIVE`.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("GUARDRAIL_STATE_ACTIVE"),
@@ -145,19 +143,19 @@ func (r *GuardrailResource) Schema(
 				},
 			},
 			"content": schema.StringAttribute{
-				MarkdownDescription: "The content of the guardrail, written in Resourcely's Really language",
+				MarkdownDescription: "The guardrail policy written in the [Really policy language](https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails). Must specify exactly one of `content` or `guardrail_template_series_id`.",
 				Optional:            true,
 				Computed:            true,
 			},
 			"guardrail_template_series_id": schema.StringAttribute{
-				MarkdownDescription: "The series id of the guardrail template used to render the policies",
+				MarkdownDescription: "The series id of the guardrail template used to render the policy. Must specify exactly one of `guardrail_template_series_id` or `content`.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString(""),
 			},
 			"guardrail_template_inputs": schema.StringAttribute{
 				CustomType:          jsontypes.NormalizedType{},
-				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs.\n\nExample: `guardrail_template_inputs = jsonencode({inputOne = \"value one\"})`",
+				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs. Required if `guardrail_template_series_id` is used. Example: `guardrail_template_inputs = jsonencode({inputOne = \"value one\"})`",
 				Optional:            true,
 			},
 		},

@@ -51,23 +51,21 @@ func (r *BlueprintResource) Schema(
 	resp *resource.SchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A Resourcely Blueprint",
-
+		MarkdownDescription: "A blueprint is a configuration template used to provision cloud infrastructure resources. Blueprints allow you to:\n\n- Define which options are available for properties of your resource(s).\n- Apply gaurdrails to your resource(s) to prevent misconfiguration.\n- Define what information to collect from your developers before provisioning the resource.\n\nOnce a blueprint is configured and published, it becomes available for use in your Resourcely service catalog.\n\nThe template is specified using Resourcely's TFT templating language. See the [Authoring Your Own Blueprints](https://docs.resourcely.io/build/setting-up-blueprints/authoring-your-own-blueprints) docs for details about TFT. The [Resourcely Foundry](https://portal.resourcely.io/foundry?mode=blueprint) provides an IDE to assist with authoring the template.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "UUID for this version.",
+				MarkdownDescription: "UUID for the current version of the blueprint.",
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the blueprint",
+				MarkdownDescription: "UUID for the blueprint.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the blueprint",
+				MarkdownDescription: "Incrementing version number for the current version of the blueprint.",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -78,11 +76,11 @@ func (r *BlueprintResource) Schema(
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The name of the blueprint.",
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "A description of the blueprint's purpose or functionality.",
 				Default:             stringdefault.StaticString(""),
 				Computed:            true,
 				Optional:            true,
@@ -116,18 +114,18 @@ func (r *BlueprintResource) Schema(
 				},
 			},
 			"content": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The templated Terraform configuration specified using Resourcely's TFT format. See the [Authoring Your Own Blueprints](https://docs.resourcely.io/build/setting-up-blueprints/authoring-your-own-blueprints) docs for details. The [Resourcely Foundry](https://portal.resourcely.io/foundry?mode=blueprint) provides an IDE to assist with authoring the content.",
 				Required:            true,
 			},
 			"guidance": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Guidance to help your users know when and how to use this blueprint.",
 				Default:             stringdefault.StaticString(""),
 				Computed:            true,
 				Optional:            true,
 			},
 			"labels": schema.SetAttribute{
 				ElementType:         basetypes.StringType{},
-				MarkdownDescription: "",
+				MarkdownDescription: "Additional keywords to help your users discover this blueprint.",
 				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
 				Computed:            true,
 				Optional:            true,
@@ -159,7 +157,7 @@ func (r *BlueprintResource) Schema(
 			"is_published": schema.BoolAttribute{
 				Computed:            true,
 				Optional:            true,
-				MarkdownDescription: "A published blueprint is available for use by developers to create resources through the Resourcely portal.\n\nIf left unset, the blueprint will start as unpublished, and you may safely change this property in the Resourcely portal.",
+				MarkdownDescription: "A published blueprint is available for use by developers to create resources through the Resourcely portal. If left unset, the blueprint will start as unpublished, and you may safely change this property in the Resourcely portal.",
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -169,7 +167,7 @@ func (r *BlueprintResource) Schema(
 				ElementType:         basetypes.StringType{},
 				Computed:            true,
 				Optional:            true,
-				MarkdownDescription: "series_id for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
+				MarkdownDescription: "The series_ids for context questions that won't be used with this blueprint, even if this blueprint matches the context questions' blueprint_categories",
 			},
 		},
 	}

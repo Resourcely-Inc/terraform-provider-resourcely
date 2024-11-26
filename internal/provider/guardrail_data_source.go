@@ -29,20 +29,18 @@ func (d *GuardrailDataSource) Metadata(ctx context.Context, req datasource.Metad
 
 func (d *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "A resourcely guardrail",
-
+		MarkdownDescription: "A guardrail governs how cloud resources can be created and altered, preventing infrastructure misconfiguration. Before infrastructure is provisioned, Resourcely examines the changes being made and prevents a merge if any guardrail requirements are violated. Some examples of guardrails include:\n\n- Require approval for making a public S3 bucket\n- Restrict the allowed compute instance types or images\n\nGuardrails are specified using the [Really policy language](https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "UUID for this version.",
+				MarkdownDescription: "UUID for the current version of this guar.",
 				Computed:            true,
 			},
 			"series_id": schema.StringAttribute{
-				MarkdownDescription: "UUID for the guardrail",
+				MarkdownDescription: "UUID for the guardrail.",
 				Required:            true,
 			},
 			"version": schema.Int64Attribute{
-				MarkdownDescription: "Specific version of the guardrail",
+				MarkdownDescription: "Incrementing version number for this current version of the guardrail.",
 				Computed:            true,
 			},
 			"scope": schema.StringAttribute{
@@ -50,36 +48,36 @@ func (d *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The name of the guardrail.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "A description of the guardrail's purpose or policy.",
 				Computed:            true,
 			},
 			"cloud_provider": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The cloud provider that this guardrail targets.",
 				Computed:            true,
 			},
 			"category": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The category of this guardrail.",
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The [state](https://docs.resourcely.io/build/setting-up-guardrails/releasing-guardrails#guardrail-status) of the guardrail.",
 				Computed:            true,
 			},
 			"content": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The guardrail policy written in the [Really policy language](https://docs.resourcely.io/build/setting-up-guardrails/authoring-your-own-guardrails).",
 				Computed:            true,
 			},
 			"guardrail_template_series_id": schema.StringAttribute{
-				MarkdownDescription: "The series id of the guardrail template used to render the policies",
+				MarkdownDescription: "The series id of the guardrail template used to render the policy.",
 				Computed:            true,
 			},
 			"guardrail_template_inputs": schema.StringAttribute{
 				CustomType:          jsontypes.NormalizedType{},
-				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs.\n\nExample: `guardrail_template_inputs = jsonencode({inputOne = \"value one\"})`",
+				MarkdownDescription: "A JSON encoding of values for the guardrail template inputs.`",
 				Computed:            true,
 			},
 		},

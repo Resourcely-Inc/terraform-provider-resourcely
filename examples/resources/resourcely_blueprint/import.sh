@@ -1,0 +1,1 @@
+terraform import resourcely_blueprint.example 00000000-00000000-00000000-00000000
