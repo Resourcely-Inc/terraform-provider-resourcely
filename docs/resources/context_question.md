@@ -101,7 +101,6 @@ resource "resourcely_context_question" "project_code" {
 - `answer_choices` (Attributes Set) The answer choices from which the developer can select. Applicable only when `qtype` is `QTYPE_SINGLE_SELECT` or `QTYPE_MULTI_SELECT`. (see [below for nested schema](#nestedatt--answer_choices))
 - `answer_format` (String) A format validation for acceptable answers to the context question. Applicable only when `qtype` is `QTYPE_TEXT` . Must be one of `ANSWER_TEXT`, `ANSWER_NUMBER`, `ANSWER_EMAIL`, or `ANSWER_REGEX`. If `ANSWER_REGEX`, must also specify the `regex_pattern` property.
 - `blueprint_categories` (Set of String) The blueprint categories to which this context question applies. This question will be asked whenever a developer uses a blueprint in these categories.
-- `excluded_blueprint_series` (Set of String) The series_ids of blueprints for which this question should not be asked, even if those blueprints belong to the context question's blueprint_categories.
 - `priority` (Number) The priority of this question, relative to others. 0=high, 1=medium, 2=low
 - `regex_pattern` (String) A regex validation for the acceptable answers to the context question. Applicable only when both `qtype` is `QTYPE_TEXT` and `answer_format` is `ANSWER_REGEX`.
 
