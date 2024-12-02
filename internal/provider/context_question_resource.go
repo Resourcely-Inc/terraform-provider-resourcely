@@ -146,13 +146,6 @@ func (r *ContextQuestionResource) Schema(_ context.Context, _ resource.SchemaReq
 				Optional:            true,
 				Computed:            true,
 			},
-			"excluded_blueprint_series": schema.SetAttribute{
-				MarkdownDescription: "The series_ids of blueprints for which this question should not be asked, even if those blueprints belong to the context question's blueprint_categories.",
-				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, nil)),
-				ElementType:         basetypes.StringType{},
-				Optional:            true,
-				Computed:            true,
-			},
 			"priority": schema.Int64Attribute{
 				MarkdownDescription: "The priority of this question, relative to others. 0=high, 1=medium, 2=low",
 				Default:             int64default.StaticInt64(0),
@@ -301,16 +294,15 @@ func (r *ContextQuestionResource) ImportState(ctx context.Context, req resource.
 
 func (r *ContextQuestionResource) buildCommonFields(ctx context.Context, plan ContextQuestionResourceModel) client.CommonContextQuestionFields {
 	commonFields := client.CommonContextQuestionFields{
-		Label:                   plan.Label.ValueString(),
-		Prompt:                  plan.Prompt.ValueString(),
-		Qtype:                   plan.Qtype.ValueString(),
-		AnswerFormat:            plan.AnswerFormat.ValueString(),
-		Scope:                   plan.Scope.ValueString(),
-		AnswerChoices:           nil,
-		BlueprintCategories:     nil,
-		RegexPattern:            plan.RegexPattern.ValueString(),
-		ExcludedBlueprintSeries: nil,
-		Priority:                plan.Priority.ValueInt64(),
+		Label:               plan.Label.ValueString(),
+		Prompt:              plan.Prompt.ValueString(),
+		Qtype:               plan.Qtype.ValueString(),
+		AnswerFormat:        plan.AnswerFormat.ValueString(),
+		Scope:               plan.Scope.ValueString(),
+		AnswerChoices:       nil,
+		BlueprintCategories: nil,
+		RegexPattern:        plan.RegexPattern.ValueString(),
+		Priority:            plan.Priority.ValueInt64(),
 	}
 
 	var answerChoices []client.AnswerChoice
@@ -323,12 +315,6 @@ func (r *ContextQuestionResource) buildCommonFields(ctx context.Context, plan Co
 	_ = plan.BlueprintCategories.ElementsAs(ctx, &blueprintCategories, false)
 	for _, category := range blueprintCategories {
 		commonFields.BlueprintCategories = append(commonFields.BlueprintCategories, category.ValueString())
-	}
-
-	var excludedBlueprintSeries []types.String
-	_ = plan.ExcludedBlueprintSeries.ElementsAs(ctx, &excludedBlueprintSeries, false)
-	for _, seriesID := range excludedBlueprintSeries {
-		commonFields.ExcludedBlueprintSeries = append(commonFields.ExcludedBlueprintSeries, seriesID.ValueString())
 	}
 
 	return commonFields

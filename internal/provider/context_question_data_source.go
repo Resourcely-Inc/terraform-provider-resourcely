@@ -86,11 +86,6 @@ func (d *ContextQuestionDataSource) Schema(_ context.Context, _ datasource.Schem
 				MarkdownDescription: "A regex validation for the acceptable answers to the context question. Applicable only when both `qtype` is `QTYPE_TEXT` and `answer_format` is `ANSWER_REGEX`.",
 				Computed:            true,
 			},
-			"excluded_blueprint_series": schema.SetAttribute{
-				MarkdownDescription: "The series_ids of blueprints for which this question should not be asked, even if those blueprints belong to the context question's blueprint_categories.",
-				ElementType:         basetypes.StringType{},
-				Computed:            true,
-			},
 			"priority": schema.Int64Attribute{
 				MarkdownDescription: "The priority of this question, relative to others. 0=high, 1=medium, 2=low",
 				Computed:            true,

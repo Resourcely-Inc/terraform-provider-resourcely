@@ -45,7 +45,6 @@ resource "resourcely_context_question" "basic" {
 	answer_choices = [{label: "tenant-context Option 1"}]
 	label = "%s"
 	regex_pattern = "regex"
-	excluded_blueprint_series = []
 	priority = 2
 }
 

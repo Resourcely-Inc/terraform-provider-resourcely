@@ -39,7 +39,6 @@ data "resourcely_context_question" "example" {
 - `answer_choices` (Attributes Set) The answer choices from which the developer can select. Applicable only when `qtype` is `QTYPE_SINGLE_SELECT` or `QTYPE_MULTI_SELECT`. (see [below for nested schema](#nestedatt--answer_choices))
 - `answer_format` (String) A format validation for acceptable answers to the context question. Applicable only when `qtype` is `QTYPE_TEXT` . Will be one of `ANSWER_TEXT`, `ANSWER_NUMBER`, `ANSWER_EMAIL`, or `ANSWER_REGEX`. If `ANSWER_REGEX`, the `regex_pattern` property will also be set.
 - `blueprint_categories` (Set of String) The blueprint categories to which this context question applies. This question will be asked whenever a developer uses a blueprint in these categories.
-- `excluded_blueprint_series` (Set of String) The series_ids of blueprints for which this question should not be asked, even if those blueprints belong to the context question's blueprint_categories.
 - `id` (String) UUID for the current version of this context question.
 - `label` (String) A key used to reference the context question in blueprints and guardrails. Is unique within your Resourcley tenant.
 - `priority` (Number) The priority of this question, relative to others. 0=high, 1=medium, 2=low
