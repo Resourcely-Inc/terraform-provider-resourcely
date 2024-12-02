@@ -18,16 +18,15 @@ type ContextQuestionResourceModel struct {
 	SeriesId types.String `tfsdk:"series_id"`
 	Version  types.Int64  `tfsdk:"version"`
 
-	Label                   types.String    `tfsdk:"label"`
-	Prompt                  types.String    `tfsdk:"prompt"`
-	Qtype                   types.String    `tfsdk:"qtype"`
-	AnswerFormat            types.String    `tfsdk:"answer_format"`
-	Scope                   types.String    `tfsdk:"scope"`
-	AnswerChoices           []AnswerChoices `tfsdk:"answer_choices"`
-	BlueprintCategories     types.Set       `tfsdk:"blueprint_categories"`
-	RegexPattern            types.String    `tfsdk:"regex_pattern"`
-	ExcludedBlueprintSeries types.Set       `tfsdk:"excluded_blueprint_series"`
-	Priority                types.Int64     `tfsdk:"priority"`
+	Label               types.String    `tfsdk:"label"`
+	Prompt              types.String    `tfsdk:"prompt"`
+	Qtype               types.String    `tfsdk:"qtype"`
+	AnswerFormat        types.String    `tfsdk:"answer_format"`
+	Scope               types.String    `tfsdk:"scope"`
+	AnswerChoices       []AnswerChoices `tfsdk:"answer_choices"`
+	BlueprintCategories types.Set       `tfsdk:"blueprint_categories"`
+	RegexPattern        types.String    `tfsdk:"regex_pattern"`
+	Priority            types.Int64     `tfsdk:"priority"`
 }
 
 func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQuestionResourceModel {
@@ -56,12 +55,6 @@ func FlattenContextQuestion(contextQuestion *client.ContextQuestion) ContextQues
 	data.BlueprintCategories = types.SetValueMust(basetypes.StringType{}, blueprintCategories)
 
 	data.RegexPattern = types.StringValue(contextQuestion.RegexPattern)
-
-	var excludedBlueprintSeries []attr.Value
-	for _, seriesID := range contextQuestion.ExcludedBlueprintSeries {
-		excludedBlueprintSeries = append(excludedBlueprintSeries, basetypes.NewStringValue(seriesID))
-	}
-	data.ExcludedBlueprintSeries = types.SetValueMust(basetypes.StringType{}, excludedBlueprintSeries)
 
 	return data
 }

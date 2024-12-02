@@ -20,16 +20,15 @@ type UpdatedContextQuestion struct {
 }
 
 type CommonContextQuestionFields struct {
-	Label                   string         `json:"label"`
-	Prompt                  string         `json:"prompt"`
-	Qtype                   string         `json:"qtype"`
-	AnswerFormat            string         `json:"answer_format,omitempty"`
-	Scope                   string         `json:"scope"`
-	AnswerChoices           []AnswerChoice `json:"answer_choices"`
-	BlueprintCategories     []string       `json:"blueprint_categories"`
-	RegexPattern            string         `json:"regex_pattern"`
-	ExcludedBlueprintSeries []string       `json:"excluded_blueprint_series"`
-	Priority                int64          `json:"priority"`
+	Label               string         `json:"label"`
+	Prompt              string         `json:"prompt"`
+	Qtype               string         `json:"qtype"`
+	AnswerFormat        string         `json:"answer_format,omitempty"`
+	Scope               string         `json:"scope"`
+	AnswerChoices       []AnswerChoice `json:"answer_choices"`
+	BlueprintCategories []string       `json:"blueprint_categories"`
+	RegexPattern        string         `json:"regex_pattern"`
+	Priority            int64          `json:"priority"`
 }
 
 type ContextQuestion struct {
