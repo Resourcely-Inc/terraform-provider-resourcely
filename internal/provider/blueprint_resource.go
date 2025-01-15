@@ -109,6 +109,8 @@ func (r *BlueprintResource) Schema(
 						"PROVIDER_SNOWFLAKE",
 						"PROVIDER_SPACELIFT",
 						"PROVIDER_VMWARE",
+						"PROVIDER_AZUREAD",
+						"PROVIDER_FMC",
 						"PROVIDER_OTHER",
 					),
 				},
